@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/home/main_food_page.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/icon_and_text.dart';
@@ -8,8 +9,17 @@ import 'package:food_delivery/widget/small_text.dart';
 /// 페이지뷰를 이렇게 독립적으로 만들어서 나중에 끼워 넣는 방식으로 사용한다.
 /// 아주 좋은 방법인것 같다.
  */
+typedef double2VoidFunc = void Function();
+
 class FoodPageBody extends StatefulWidget {
-  const FoodPageBody({Key? key}) : super(key: key);
+  final double2VoidFunc callbackForCurrPageValue;
+  final PagesValuesToShare pagesValuesToShare;
+
+  const FoodPageBody(
+      {Key? key,
+      required this.pagesValuesToShare,
+      required this.callbackForCurrPageValue})
+      : super(key: key);
 
   @override
   State<FoodPageBody> createState() => _FoodPageBodyState();
@@ -17,7 +27,6 @@ class FoodPageBody extends StatefulWidget {
 
 class _FoodPageBodyState extends State<FoodPageBody> {
   PageController pageController = PageController(viewportFraction: 0.85);
-  var _currPageValue = 0.0;
   double _scaleFactor = 0.8;
   double _height = 220;
 
@@ -27,9 +36,11 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     // 내가 PageController 가 움직일때 값을 받아오기 위해서 Listener 를 연결해주어야 한다.
     pageController.addListener(() {
       setState(() {
-        _currPageValue =
+        widget.pagesValuesToShare.currPageValue =
             pageController.page!; // 숫자가 0.0 - 1.0 까지 값이 변경되고 있네. page 값으로.. !!!
-        print('Current value is ${_currPageValue.toString()}');
+        widget.callbackForCurrPageValue();
+        print(
+            'Current value is ${widget.pagesValuesToShare.currPageValue.toString()}');
       });
     });
   }
@@ -42,11 +53,15 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   Widget build(BuildContext context) {
+    int pageTotalValue = 5;
+    // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
+    // 보이지 이거 지금 update 하지 않았다.
+    widget.pagesValuesToShare.pagesTotalValue = pageTotalValue;
     return Container(
       height: 320,
       child: PageView.builder(
           controller: pageController,
-          itemCount: 5,
+          itemCount: pageTotalValue,
           itemBuilder: (context, position) {
             return _PageViewBuilderItem(position);
           }),
@@ -55,20 +70,27 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   Widget _PageViewBuilderItem(int position) {
     Matrix4 matrix4 = new Matrix4.identity();
-    if (position == _currPageValue.floor()) {
-      var currScale = 1 - (_currPageValue - position) * (1 - _scaleFactor);
+    if (position == widget.pagesValuesToShare.currPageValue.floor()) {
+      var currScale = 1 -
+          (widget.pagesValuesToShare.currPageValue - position) *
+              (1 - _scaleFactor);
       var currTrans = _height * (1 - currScale) / 2;
       matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, currTrans, 0);
-    } else if (position == _currPageValue.floor() + 1) {
-      var currScale =
-          _scaleFactor + (_currPageValue - position + 1) * (1 - _scaleFactor);
+    } else if (position ==
+        widget.pagesValuesToShare.currPageValue.floor() + 1) {
+      var currScale = _scaleFactor +
+          (widget.pagesValuesToShare.currPageValue - position + 1) *
+              (1 - _scaleFactor);
       var currTrans = _height * (1 - currScale) / 2;
       matrix4 = Matrix4.diagonal3Values(1, currScale, 1);
       matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, currTrans, 0);
-    } else if (position == _currPageValue.floor() - 1) {
-      var currScale = 1 - (_currPageValue - position) * (1 - _scaleFactor);
+    } else if (position ==
+        widget.pagesValuesToShare.currPageValue.floor() - 1) {
+      var currScale = 1 -
+          (widget.pagesValuesToShare.currPageValue - position) *
+              (1 - _scaleFactor);
       var currTrans = _height * (1 - currScale) / 2;
       matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, currTrans, 0);
