@@ -9,6 +9,8 @@ class Dimensions {
   // bigger Axis
   static double biggerAxis =
       screenHeight >= screenWidth ? screenHeight : screenWidth;
+  static double smallerAxis =
+      screenHeight >= screenWidth ? screenWidth : screenHeight;
 
   // for food_page_body mother container
   static double pageView = biggerAxis / 2.64;
@@ -49,4 +51,8 @@ class Dimensions {
 
   // icon
   static double icon24 = biggerAxis / (844 / 24);
+
+  // Popular List View Size
+  static double listViewImgSize = smallerAxis / (390 / 120);
+  static double listViewTextContainerSize = smallerAxis / (390 / 100);
 }
