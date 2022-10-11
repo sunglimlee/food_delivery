@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery/home/food_page_body.dart';
 import 'package:food_delivery/home/food_page_header_bar.dart';
 import 'package:food_delivery/utils/colors.dart';
+import 'package:food_delivery/utils/dimensions.dart';
 
 class MainFoodPage extends StatefulWidget {
   const MainFoodPage({Key? key}) : super(key: key);
@@ -20,25 +21,27 @@ class _MainFoodPageState extends State<MainFoodPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 15, bottom: 15),
-              //padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                children: [
-                  // showing the header
-                  const FoodPageHeaderBar(),
-                  // showing the body
-                  FoodPageBody(
-                    pagesValuesToShare: pagesValuesToShare,
-                    callbackForCurrPageValue: update,
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                    top: Dimensions.height15, bottom: Dimensions.height15),
+                child: Column(
+                  children: [
+                    // showing the header
+                    const FoodPageHeaderBar(),
+                    // showing the body
+                    FoodPageBody(
+                      pagesValuesToShare: pagesValuesToShare,
+                      callbackForCurrPageValue: update,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            dotIndicator(pagesValuesToShare.currPageValue),
-          ],
+              dotIndicator(pagesValuesToShare.currPageValue),
+            ],
+          ),
         ),
       ),
     );
@@ -57,10 +60,10 @@ class _MainFoodPageState extends State<MainFoodPage> {
       position: currIndexPage,
       decorator: DotsDecorator(
         activeColor: AppColors.mainColor,
-        size: const Size.square(9.0),
-        activeSize: const Size(18.0, 9.0),
-        activeShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        size: Size.square(Dimensions.height10),
+        activeSize: Size(Dimensions.height20, Dimensions.height10),
+        activeShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius5)),
       ),
     );
   }

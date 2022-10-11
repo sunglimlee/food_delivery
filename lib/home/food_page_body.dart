@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/home/main_food_page.dart';
 import 'package:food_delivery/utils/colors.dart';
+import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/icon_and_text.dart';
 import 'package:food_delivery/widget/small_text.dart';
@@ -27,8 +28,8 @@ class FoodPageBody extends StatefulWidget {
 
 class _FoodPageBodyState extends State<FoodPageBody> {
   PageController pageController = PageController(viewportFraction: 0.85);
-  double _scaleFactor = 0.8;
-  double _height = 220;
+  final double _scaleFactor = 0.8;
+  final double _height = Dimensions.pageViewContainer;
 
   @override
   void initState() {
@@ -53,12 +54,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   Widget build(BuildContext context) {
+    // 지금은 그냥 하드코딩 한 상태 TODO
     int pageTotalValue = 5;
     // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
     // 보이지 이거 지금 update 하지 않았다.
     widget.pagesValuesToShare.pagesTotalValue = pageTotalValue;
     return Container(
-      height: 320,
+      height: Dimensions.pageView,
       child: PageView.builder(
           controller: pageController,
           itemCount: pageTotalValue,
@@ -117,10 +119,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        height: 130,
-        margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
+        height: Dimensions.pageViewTextContainer,
+        margin: EdgeInsets.only(
+            left: Dimensions.edgeInsets30,
+            right: Dimensions.edgeInsets30,
+            bottom: Dimensions.edgeInsets30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(Dimensions.radius30),
             color: Colors.white,
             boxShadow: const [
               BoxShadow(
@@ -138,41 +143,46 @@ class _FoodPageBodyState extends State<FoodPageBody> {
               ),
             ]),
         child: Container(
-          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          padding: EdgeInsets.only(
+              top: Dimensions.edgeInsets15,
+              left: Dimensions.edgeInsets15,
+              right: Dimensions.edgeInsets15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               BigText(
                 text: 'Korean DanJang Soup',
+                size: Dimensions.bigTextSize,
               ),
               SizedBox(
-                height: 10,
+                height: Dimensions.height10,
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Wrap(
                     children: List.generate(
                         5,
-                        (index) => const Icon(
+                        (index) => Icon(
                               Icons.star,
                               color: AppColors.mainColor,
-                              size: 15,
+                              size: Dimensions.height15,
                             )),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: Dimensions.height10),
                   SmallText(text: '4.5'),
-                  const SizedBox(
-                    width: 10,
+                  SizedBox(
+                    width: Dimensions.height10,
                   ),
                   SmallText(text: '1287'),
-                  const SizedBox(
-                    width: 10,
+                  SizedBox(
+                    width: Dimensions.height10,
                   ),
                   SmallText(text: 'comments'),
                 ],
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: Dimensions.height20,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,10 +211,11 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   Widget _mainBody(int position) {
     return Container(
         height: _height,
-        margin: const EdgeInsets.only(left: 10, right: 10),
+        margin: EdgeInsets.only(
+            left: Dimensions.edgeInsets10, right: Dimensions.edgeInsets10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: position.isEven ? Colors.green : Colors.pink,
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
+          //color: position.isEven ? Colors.green : Colors.pink,
           image: const DecorationImage(
               image: NetworkImage(
                   'https://mblogthumb-phinf.pstatic.net/20160728_110/angtal11_1469678845951ucEXr_JPEG/IMG_7613.JPG?type=w2'),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/utils/colors.dart';
+import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/small_text.dart';
+import 'package:get/get.dart';
 
 class FoodPageHeaderBar extends StatelessWidget {
   const FoodPageHeaderBar({Key? key}) : super(key: key);
@@ -9,7 +11,10 @@ class FoodPageHeaderBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+      padding: EdgeInsets.only(
+          left: Dimensions.edgeInsets15,
+          right: Dimensions.edgeInsets15,
+          bottom: Dimensions.edgeInsets15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -18,7 +23,7 @@ class FoodPageHeaderBar extends StatelessWidget {
               BigText(
                 text: 'Bangladesh',
                 color: AppColors.mainColor,
-                size: 28,
+                size: Dimensions.bigTextSize,
               ),
               Row(
                 children: [
@@ -33,12 +38,12 @@ class FoodPageHeaderBar extends StatelessWidget {
           ),
           Center(
             child: Container(
-              width: 45,
-              height: 45,
+              width: Dimensions.height45,
+              height: Dimensions.height45,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
                   color: AppColors.mainColor),
-              child: Icon(
+              child: Icon(size: Dimensions.icon24 ,
                 Icons.search,
                 color: Colors.yellow[50],
               ),
