@@ -26,13 +26,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     super.initState();
     // 내가 PageController 가 움직일때 값을 받아오기 위해서 Listener 를 연결해주어야 한다.
     pageController.addListener(() {
-      setState((){
-        _currPageValue = pageController.page!; // 숫자가 0.0 - 1.0 까지 값이 변경되고 있네. page 값으로.. !!!
+      setState(() {
+        _currPageValue =
+            pageController.page!; // 숫자가 0.0 - 1.0 까지 값이 변경되고 있네. page 값으로.. !!!
         print('Current value is ${_currPageValue.toString()}');
-       });
+      });
     });
   }
-
 
   @override
   void dispose() {
@@ -45,34 +45,41 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     return Container(
       height: 320,
       child: PageView.builder(
-        controller: pageController,
+          controller: pageController,
           itemCount: 5,
           itemBuilder: (context, position) {
-            return _buildPageItem(position);
+            return _PageViewBuilderItem(position);
           }),
     );
   }
 
-  Widget _buildPageItem(int position) {
+  Widget _PageViewBuilderItem(int position) {
     Matrix4 matrix4 = new Matrix4.identity();
     if (position == _currPageValue.floor()) {
       var currScale = 1 - (_currPageValue - position) * (1 - _scaleFactor);
-      var currTrans = _height * (1 - currScale)/2;
-      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, currTrans, 0);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
     } else if (position == _currPageValue.floor() + 1) {
-      var currScale = _scaleFactor + (_currPageValue - position + 1) * (1 - _scaleFactor);
-      var currTrans = _height * (1 - currScale)/2;
+      var currScale =
+          _scaleFactor + (_currPageValue - position + 1) * (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
       matrix4 = Matrix4.diagonal3Values(1, currScale, 1);
-      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, currTrans, 0);
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
     } else if (position == _currPageValue.floor() - 1) {
       var currScale = 1 - (_currPageValue - position) * (1 - _scaleFactor);
-      var currTrans = _height * (1 - currScale)/2;
-      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, currTrans, 0);
-    } else { // 3번째 것
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else {
+      // 3번째 것
       var currScale = 0.8;
-      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, _height*(1-_scaleFactor)/2, 1);
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, _height * (1 - _scaleFactor) / 2, 1);
     }
-      return Transform( // 이렇게 감싸주면 바뀌는구나.
+    return Transform(
+      // 이렇게 감싸주면 바뀌는구나.
       transform: matrix4,
       child: Stack(
         children: [
@@ -91,55 +98,80 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         height: 130,
         margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFFe8e8e8),
-            blurRadius: 5.0,
-            offset: Offset(0,5),
-          ),
-          BoxShadow(
+            borderRadius: BorderRadius.circular(30),
             color: Colors.white,
-            offset: Offset(-5,0),
-          ),
-          BoxShadow(
-            color: Colors.white,
-            offset: Offset(5,0),
-          ),
-        ]),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFFe8e8e8),
+                blurRadius: 5.0,
+                offset: Offset(0, 5),
+              ),
+              BoxShadow(
+                color: Colors.white,
+                offset: Offset(-5, 0),
+              ),
+              BoxShadow(
+                color: Colors.white,
+                offset: Offset(5, 0),
+              ),
+            ]),
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BigText(text: 'Korean DanJang Soup',),
-              SizedBox(height: 10,),
+              BigText(
+                text: 'Korean DanJang Soup',
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
                   Wrap(
-                    children: List.generate(5, (index) => const Icon(Icons.star, color: AppColors.mainColor, size: 15,)),
+                    children: List.generate(
+                        5,
+                        (index) => const Icon(
+                              Icons.star,
+                              color: AppColors.mainColor,
+                              size: 15,
+                            )),
                   ),
                   const SizedBox(width: 10),
                   SmallText(text: '4.5'),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   SmallText(text: '1287'),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   SmallText(text: 'comments'),
                 ],
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  IconAndText(iconData: Icons.circle_sharp, text: 'Normal', iconColor: AppColors.iconColor1),
-                  IconAndText(iconData: Icons.location_on, text: '1.7km', iconColor: AppColors.mainColor),
-                  IconAndText(iconData: Icons.circle_sharp, text: '32min', iconColor: AppColors.iconColor2),
+                  IconAndText(
+                      iconData: Icons.circle_sharp,
+                      text: 'Normal',
+                      iconColor: AppColors.iconColor1),
+                  IconAndText(
+                      iconData: Icons.location_on,
+                      text: '1.7km',
+                      iconColor: AppColors.mainColor),
+                  IconAndText(
+                      iconData: Icons.circle_sharp,
+                      text: '32min',
+                      iconColor: AppColors.iconColor2),
                 ],
               ),
             ],
           ),
-        ) ,
+        ),
       ),
     );
   }
@@ -150,8 +182,10 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         margin: const EdgeInsets.only(left: 10, right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: position.isEven? Colors.green: Colors.pink,
-          image: const DecorationImage(image: NetworkImage('https://mblogthumb-phinf.pstatic.net/20160728_110/angtal11_1469678845951ucEXr_JPEG/IMG_7613.JPG?type=w2'),
+          color: position.isEven ? Colors.green : Colors.pink,
+          image: const DecorationImage(
+              image: NetworkImage(
+                  'https://mblogthumb-phinf.pstatic.net/20160728_110/angtal11_1469678845951ucEXr_JPEG/IMG_7613.JPG?type=w2'),
               fit: BoxFit.cover),
         ));
   }

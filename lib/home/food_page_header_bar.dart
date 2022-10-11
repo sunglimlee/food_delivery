@@ -9,8 +9,7 @@ class FoodPageHeaderBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 15, right: 15,bottom: 15),
-
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -23,7 +22,10 @@ class FoodPageHeaderBar extends StatelessWidget {
               ),
               Row(
                 children: [
-                  SmallText(text: 'Narsingdi', color: Colors.black54,),
+                  SmallText(
+                    text: 'Narsingdi',
+                    color: Colors.black54,
+                  ),
                   Icon(Icons.arrow_drop_down_rounded)
                 ],
               ),

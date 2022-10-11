@@ -9,8 +9,13 @@ class SmallText extends StatelessWidget {
   double height;
 
   // 이제 트랜드는 초기화를 생성자에서 해준다.
-  SmallText({Key? key, this.color = AppColors
-      .textColor, required this.text, this.size = 12,this.height = 1.2}) : super(key: key);
+  SmallText(
+      {Key? key,
+      this.color = AppColors.textColor,
+      required this.text,
+      this.size = 12,
+      this.height = 1.2})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
