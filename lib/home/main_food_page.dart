@@ -4,6 +4,8 @@ import 'package:food_delivery/home/food_page_body.dart';
 import 'package:food_delivery/home/food_page_header_bar.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
+import 'package:food_delivery/widget/big_text.dart';
+import 'package:food_delivery/widget/small_text.dart';
 
 class MainFoodPage extends StatefulWidget {
   const MainFoodPage({Key? key}) : super(key: key);
@@ -40,6 +42,10 @@ class _MainFoodPageState extends State<MainFoodPage> {
                 ),
               ),
               dotIndicator(pagesValuesToShare.currPageValue),
+              SizedBox(
+                height: Dimensions.height30,
+              ),
+              _popularTextArea(),
             ],
           ),
         ),
@@ -64,6 +70,37 @@ class _MainFoodPageState extends State<MainFoodPage> {
         activeSize: Size(Dimensions.height20, Dimensions.height10),
         activeShape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius5)),
+      ),
+    );
+  }
+
+  Widget _popularTextArea() {
+    return Container(
+      margin: EdgeInsets.only(left: Dimensions.edgeInsets30),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          BigText(text: 'Popular'),
+          SizedBox(
+            width: Dimensions.edgeInsets10,
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: Dimensions.edgeInsets3),
+            child: BigText(
+              text: '.',
+              color: Colors.black26,
+            ),
+          ),
+          SizedBox(
+            width: Dimensions.edgeInsets10,
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: Dimensions.edgeInsets2),
+            child: SmallText(
+              text: 'Food Paring',
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -71,7 +71,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   }
 
   Widget _PageViewBuilderItem(int position) {
-    Matrix4 matrix4 = new Matrix4.identity();
+    Matrix4 matrix4 = Matrix4.identity();
     if (position == widget.pagesValuesToShare.currPageValue.floor()) {
       var currScale = 1 -
           (widget.pagesValuesToShare.currPageValue - position) *

@@ -32,6 +32,8 @@ class Dimensions {
   static double height45 = biggerAxis / (844 / 45);
 
   // dynamic width
+  static double edgeInsets2 = biggerAxis / (844 / 2);
+  static double edgeInsets3 = biggerAxis / (844 / 3);
   static double edgeInsets5 = biggerAxis / (844 / 5);
   static double edgeInsets10 = biggerAxis / 84.4;
   static double edgeInsets15 = biggerAxis / 56.27;

@@ -3,7 +3,6 @@ import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/small_text.dart';
-import 'package:get/get.dart';
 
 class FoodPageHeaderBar extends StatelessWidget {
   const FoodPageHeaderBar({Key? key}) : super(key: key);
@@ -31,7 +30,7 @@ class FoodPageHeaderBar extends StatelessWidget {
                     text: 'Narsingdi',
                     color: Colors.black54,
                   ),
-                  Icon(Icons.arrow_drop_down_rounded)
+                  const Icon(Icons.arrow_drop_down_rounded)
                 ],
               ),
             ],
