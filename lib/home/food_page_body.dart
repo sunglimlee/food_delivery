@@ -42,7 +42,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.green,
+    return Container(
       height: 320,
       child: PageView.builder(
         controller: pageController,
@@ -92,7 +92,22 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: Colors.white,),
+          color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFFe8e8e8),
+            blurRadius: 5.0,
+            offset: Offset(0,5),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(-5,0),
+          ),
+          BoxShadow(
+            color: Colors.white,
+            offset: Offset(5,0),
+          ),
+        ]),
         child: Container(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Column(
