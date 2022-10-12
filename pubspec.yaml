@@ -37,6 +37,7 @@ dependencies:
   google_fonts: ^3.0.1
   dots_indicator: ^2.1.0
   get:
+  readmore: ^2.2.0
 
 dev_dependencies:
   flutter_test:

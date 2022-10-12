@@ -1,7 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery/home/food_page_body.dart';
-import 'package:food_delivery/home/food_page_header_bar.dart';
+import 'package:food_delivery/pages/home/food_page_body.dart';
+import 'package:food_delivery/pages/home/food_page_header_bar.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/big_text.dart';
