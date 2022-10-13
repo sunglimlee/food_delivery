@@ -1,22 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/utils/colors.dart';
-import 'package:readmore/readmore.dart';
+import 'package:food_delivery/utils/readmore_conversion.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/App_Column.dart';
 import 'package:food_delivery/widget/app_icon.dart';
 import 'package:food_delivery/widget/big_text.dart';
 
-class PopularFoodDetail extends StatelessWidget {
+class PopularFoodDetail extends StatefulWidget {
   const PopularFoodDetail({Key? key}) : super(key: key);
 
+  @override
+  State<PopularFoodDetail> createState() => _PopularFoodDetailState();
+}
+
+class _PopularFoodDetailState extends State<PopularFoodDetail> {
   // 정말 관건은 Positioned 을 사용하지 말자.
-  // 여기서 관건은 스택을 둘러싸고 있는 Container 의 height 를 정해주고
-  // 나머지는 전부 Positioned(Container(margin :  을 설정해준다. Positioned 에 해주지 말자.
-  // 그리고 나서는 SingChildScrollView 를 설정해준다.
-  // https://stackoverflow.com/questions/54359662/how-to-make-stack-layout-scroll-able-using-singlechildscrollview
-  // https://medium.com/flutterworld/flutter-how-to-get-the-height-of-the-widget-be4892abb1a2
   @override
   Widget build(BuildContext context) {
+    ReadMoreTextConversion readMoreTextConversion = ReadMoreTextConversion(
+      'Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.',
+      trimLines: 3,
+      colorClickableText: Colors.pink,
+      trimMode: TrimModeC.Line,
+      trimCollapsedText: 'Show more',
+      trimExpandedText: 'Show less',
+      style: TextStyle(
+        height: 1.5,
+        color: Colors.black45,
+        fontSize: Dimensions.font20,
+      ),
+      moreStyle: TextStyle(
+        color: Colors.red[300],
+        fontSize: Dimensions.font16,
+        fontWeight: FontWeight.bold,
+      ),
+      lessStyle: TextStyle(
+        color: Colors.red[300],
+        fontSize: Dimensions.font16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -71,27 +94,11 @@ class PopularFoodDetail extends StatelessWidget {
                       child: BigText(
                         text: 'Introduce',
                       )),
-                  ReadMoreText(
-                    'Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.',
-                    trimLines: 3,
-                    colorClickableText: Colors.pink,
-                    trimMode: TrimMode.Line,
-                    trimCollapsedText: 'Show more',
-                    trimExpandedText: 'Show less',
-                    style: TextStyle(
-                      color: Colors.black45,
-                      fontSize: Dimensions.font16,
-                    ),
-                    moreStyle: TextStyle(
-                      color: Colors.red[300],
-                      fontSize: Dimensions.font16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    lessStyle: TextStyle(
-                      color: Colors.red[300],
-                      fontSize: Dimensions.font16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {});
+                    },
+                    child: readMoreTextConversion,
                   ),
                   SizedBox(
                     height: Dimensions.height45,

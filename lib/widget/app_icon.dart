@@ -5,6 +5,7 @@ class AppIcon extends StatelessWidget {
   final IconData icon;
   final Color backgroundColor;
   final Color iconColor;
+  final double iconSize;
   final double size;
 
   // [error] The default value of an optional parameter must be constant.
@@ -14,10 +15,11 @@ class AppIcon extends StatelessWidget {
       required this.icon,
       this.backgroundColor = const Color(0xFFfcf4e4),
       this.iconColor = const Color(0xFF756d54),
+      this.iconSize = 0,
       this.size = 40})
       : super(key: key);
 
-  // TODO 여기 바꿔야 된다. Dimemsions
+  // TODO 여기 바꿔야 된다. Dimensions
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +33,7 @@ class AppIcon extends StatelessWidget {
       child: Icon(
         icon,
         color: iconColor,
-        size: Dimensions.icon16,
+        size: (iconSize == 0) ? Dimensions.icon16 : iconSize,
       ),
     );
   }
