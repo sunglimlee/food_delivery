@@ -1,12 +1,16 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
+import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/pages/home/food_page_body.dart';
 import 'package:food_delivery/pages/home/food_page_header_bar.dart';
+import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/icon_and_text.dart';
 import 'package:food_delivery/widget/small_text.dart';
+import 'package:get/get.dart';
 
 class MainFoodPage extends StatefulWidget {
   const MainFoodPage({Key? key}) : super(key: key);
@@ -41,11 +45,16 @@ class _MainFoodPageState extends State<MainFoodPage> {
                     // showing the body
                     Column(
                       children: [
+                        // Slider Section
                         FoodPageBody(
                           pagesValuesToShare: pagesValuesToShare,
                           callbackForCurrPageValue: update,
                         ),
-                        dotIndicator(pagesValuesToShare.currPageValue),
+                        GetBuilder<PopularProductController>(
+                            builder: (popularProducts) {
+                          return dotIndicator(pagesValuesToShare.currPageValue,
+                              popularProducts);
+                        }), // TODO 여기서 또 GetBuilder 를 해야할까? 안해도 될거 같은데???
                         SizedBox(
                           height: Dimensions.height30,
                         ),
@@ -53,7 +62,17 @@ class _MainFoodPageState extends State<MainFoodPage> {
                         SizedBox(
                           height: Dimensions.height30,
                         ),
-                        _popularListView(),
+                        GetBuilder<RecommendedProductController>(
+                          builder: (recommendedProducts) {
+                            // Recommended product 리스트를 보여준다.
+                            return (recommendedProducts.isLoaded == true)
+                                ? _recommendedListView(recommendedProducts)
+                                : const CircularProgressIndicator(); // 나오긴 했는데 약해. 내가 원한게 아니야..
+                          },
+                        ),
+                        SizedBox(
+                          height: Dimensions.height30,
+                        ),
                       ],
                     ),
                   ],
@@ -73,9 +92,13 @@ class _MainFoodPageState extends State<MainFoodPage> {
     });
   }
 
-  Widget dotIndicator(double currIndexPage) {
+  Widget dotIndicator(
+      double currIndexPage, PopularProductController popularProducts) {
     return DotsIndicator(
-      dotsCount: pagesValuesToShare.pagesTotalValue,
+      // 0 일경우에는 강제로 1로 세팅하도록 한다. 인터넷이기 때문에 속도가 느릴 수 가 있으므로.
+      dotsCount: popularProducts.popularProductList.length <= 0
+          ? 1
+          : popularProducts.popularProductList.length,
       position: currIndexPage,
       decorator: DotsDecorator(
         activeColor: AppColors.mainColor,
@@ -93,7 +116,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          BigText(text: 'Popular'),
+          BigText(text: 'Recommended'),
           SizedBox(
             width: Dimensions.edgeInsets10,
           ),
@@ -118,14 +141,17 @@ class _MainFoodPageState extends State<MainFoodPage> {
     );
   }
 
-  Widget _popularListView() {
+  Widget _recommendedListView(
+      RecommendedProductController recommendedProducts) {
     return SizedBox(
       //height: 700,
       child: ListView.builder(
           //scrollDirection: Axis.vertical,
-          physics: const NeverScrollableScrollPhysics(), // 이러니깐 스크롤이 안되게 하는구나.
+          physics: const NeverScrollableScrollPhysics(),
+          // 이러니깐 스크롤이 안되게 하는구나.
           shrinkWrap: true,
-          itemCount: 10, // 임시로 넣어놓은 값 TODO
+          itemCount: recommendedProducts.recommendedProductList.length,
+          // recommendedProduct 의 전체 갯수
           itemBuilder: (context, index) {
             return Container(
               margin: EdgeInsets.only(
@@ -141,13 +167,14 @@ class _MainFoodPageState extends State<MainFoodPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(Dimensions.radius20),
                       color: Colors.white38,
-                      image: const DecorationImage(
+                      image: DecorationImage(
+                          // recommended image 그림파일 받아온것
                           image: NetworkImage(
-                            'https://www.lacademie.com/wp-content/uploads/2021/06/kimchi-korea-800x600.jpg',
+                            '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${recommendedProducts.recommendedProductList[index].img}',
                           ),
                           fit: BoxFit.cover),
                     ),
-                    child: Text('aa'),
+                    //child: Text('aa'),
                   ),
                   // text section
                   Expanded(
@@ -170,7 +197,8 @@ class _MainFoodPageState extends State<MainFoodPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             BigText(
-                              text: 'Nutritious fruit meal in China',
+                              text: recommendedProducts
+                                  .recommendedProductList[index].name!,
                             ),
                             SmallText(text: 'With chinese characteristics'),
                             Row(

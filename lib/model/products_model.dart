@@ -36,16 +36,16 @@ class Product {
 }
 
 class ProductModel {
-  int? _id;
-  String? _name;
-  String? _description;
-  int? _price;
-  int? _stars;
-  String? _img;
-  String? _location;
-  String? _createdAt;
-  String? _updatedAt;
-  int? _typeId;
+  int? id;
+  String? name;
+  String? description;
+  int? price;
+  int? stars;
+  String? img;
+  String? location;
+  String? createdAt;
+  String? updatedAt;
+  int? typeId;
 
   ProductModel(
       {id,
@@ -58,42 +58,42 @@ class ProductModel {
       createdAt,
       updatedAt,
       typeId})
-      : _id = id,
-        _name = name,
-        _description = description,
-        _price = price,
-        _stars = stars,
-        _img = img,
-        _location = location,
-        _createdAt = createdAt,
-        _updatedAt = updatedAt,
-        _typeId = typeId;
+      : id = id,
+        name = name,
+        description = description,
+        price = price,
+        stars = stars,
+        img = img,
+        location = location,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        typeId = typeId;
 
   ProductModel.fromJson(Map<String, dynamic> json) {
-    _id = json['id'];
-    _name = json['name'];
-    _description = json['description'];
-    _price = json['price'];
-    _stars = json['stars'];
-    _img = json['img'];
-    _location = json['location'];
-    _createdAt = json['created_at'];
-    _updatedAt = json['updated_at'];
-    _typeId = json['type_id'];
+    id = json['id'];
+    name = json['name'];
+    description = json['description'];
+    price = json['price'];
+    stars = json['stars'];
+    img = json['img'];
+    location = json['location'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    typeId = json['type_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = _id;
-    data['name'] = _name;
-    data['description'] = _description;
-    data['price'] = _price;
-    data['stars'] = _stars;
-    data['img'] = _img;
-    data['location'] = _location;
-    data['created_at'] = _createdAt;
-    data['updated_at'] = _updatedAt;
-    data['type_id'] = _typeId;
+    data['id'] = id;
+    data['name'] = name;
+    data['description'] = description;
+    data['price'] = price;
+    data['stars'] = stars;
+    data['img'] = img;
+    data['location'] = location;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['type_id'] = typeId;
     return data;
   }
 }

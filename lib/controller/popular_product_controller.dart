@@ -11,11 +11,15 @@ class PopularProductController extends GetxController {
 
   List<ProductModel> _popularProductList = []; // 리스트 초기화를 시켰다.
 
+  // 이미지 loading 대기 서클 넣기 위해서
+  bool _isLoaded = false; // private 으로 만들고
+  bool get isLoaded => _isLoaded;
+
   Future<void> getPopularProductList() async {
     Response response = await popularProductRepo.getPopularProductList();
     if (response.statusCode == 200) {
       // 성공했다면 successful
-      print('데이터 가져오기 성공했슴. [in Controller]');
+      print('데이터 가져오기 성공했슴. [in popular Controller]');
       _popularProductList =
           []; // 실행할 때마다 초기화를 시켜주어야 한다. 그래야 데이터가 반복해서 들어가는걸 방지할 수 있다. 상태가 유지되고 있으므로
       // 잘기억해라.. 이제 여기서 데이터를 실제로 사용할 거기 때문에 모델로 바꾸어주어야 한다는거지..
@@ -23,11 +27,12 @@ class PopularProductController extends GetxController {
 
       //
       _popularProductList.addAll(Product.fromJson(response.body)
-          .products); // json 을 Model 로 변환해서 넣어주어야 한다. TODO
-      print("$_popularProductList in Controller");
+          .products); // json 을 Model 로 변환해서 넣어주었슴.
+      print("$_popularProductList in popular Controller");
+      _isLoaded = true;
       update(); // setState 를 실행시킨다.
     } else {
-      print('데이터 가져오기 실패했슴 ${response.statusCode}');
+      print('popularProductController  데이터 가져오기 실패했슴 ${response.statusCode}');
     }
   }
 }

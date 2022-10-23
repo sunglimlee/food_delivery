@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
+import 'package:food_delivery/model/products_model.dart';
 import 'package:food_delivery/pages/home/main_food_page.dart';
+import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/App_Column.dart';
 import 'package:food_delivery/widget/big_text.dart';
 import 'package:food_delivery/widget/icon_and_text.dart';
 import 'package:food_delivery/widget/small_text.dart';
+import 'package:get/get.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 /*
 /// 페이지뷰를 이렇게 독립적으로 만들어서 나중에 끼워 넣는 방식으로 사용한다.
@@ -55,23 +60,26 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    // 지금은 그냥 하드코딩 한 상태 TODO
-    int pageTotalValue = 5;
-    // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
-    // 보이지 이거 지금 update 하지 않았다.
-    widget.pagesValuesToShare.pagesTotalValue = pageTotalValue;
-    return Container(
-      height: Dimensions.pageView,
-      child: PageView.builder(
-          controller: pageController,
-          itemCount: pageTotalValue,
-          itemBuilder: (context, position) {
-            return _PageViewBuilderItem(position);
-          }),
+    return GetBuilder<PopularProductController>(
+      builder: (popularProducts) {
+        // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
+        widget.pagesValuesToShare.pagesTotalValue =
+            popularProducts.popularProductList.length;
+        return Container(
+          height: Dimensions.pageView,
+          child: PageView.builder(
+              controller: pageController,
+              itemCount: popularProducts.popularProductList.length,
+              itemBuilder: (context, position) {
+                return _PageViewBuilderItem(
+                    position, popularProducts.popularProductList[position]);
+              }),
+        );
+      },
     );
   }
 
-  Widget _PageViewBuilderItem(int position) {
+  Widget _PageViewBuilderItem(int position, ProductModel popularProduct) {
     Matrix4 matrix4 = Matrix4.identity();
     if (position == widget.pagesValuesToShare.currPageValue.floor()) {
       var currScale = 1 -
@@ -108,14 +116,14 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       transform: matrix4,
       child: Stack(
         children: [
-          _mainBody(position),
-          _subBody(),
+          _mainBody(position, popularProduct),
+          _subBody(popularProduct),
         ],
       ),
     );
   }
 
-  Widget _subBody() {
+  Widget _subBody(ProductModel popularProduct) {
     // 옆에 패딩을 넣어주기 위해서 Container 를 또 넣어주기로 했지..
     return Align(
       alignment: Alignment.bottomCenter,
@@ -143,23 +151,46 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 offset: Offset(5, 0),
               ),
             ]),
-        child: const AppColumn(title: 'DaunJang Soup in Korean Style'),
+        child: AppColumn(title: popularProduct.name!),
       ),
     );
   }
 
-  Widget _mainBody(int position) {
+  Widget _mainBody(int position, ProductModel popularProduct) {
     return Container(
-        height: _height,
-        margin: EdgeInsets.only(
-            left: Dimensions.edgeInsets10, right: Dimensions.edgeInsets10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius30),
-          //color: position.isEven ? Colors.green : Colors.pink,
-          image: const DecorationImage(
-              image: NetworkImage(
-                  'https://mblogthumb-phinf.pstatic.net/20160728_110/angtal11_1469678845951ucEXr_JPEG/IMG_7613.JPG?type=w2'),
-              fit: BoxFit.cover),
-        ));
+      height: _height,
+      margin: EdgeInsets.only(
+          left: Dimensions.edgeInsets10, right: Dimensions.edgeInsets10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimensions.radius30),
+        //color: position.isEven ? Colors.green : Colors.pink,
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: FadeInImage.memoryNetwork(
+            placeholder: kTransparentImage,
+            //const AssetImage('assets/images/loading.png'),
+            image:
+                '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${popularProduct.img}',
+          ).image,
+        ),
+      ),
+    );
   }
 }
+
+/*
+Widget _mainBody(int position, ProductModel popularProduct) {
+  return Container(
+      height: _height,
+      margin: EdgeInsets.only(
+          left: Dimensions.edgeInsets10, right: Dimensions.edgeInsets10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimensions.radius30),
+        //color: position.isEven ? Colors.green : Colors.pink,
+        image: DecorationImage(
+            image:NetworkImage(
+                AppConstants.BASE_URL + '/uploads/' + popularProduct.img.toString()),
+            fit: BoxFit.cover),
+      ));
+}
+*/
