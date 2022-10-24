@@ -4,6 +4,7 @@ import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/pages/home/food_page_body.dart';
 import 'package:food_delivery/pages/home/food_page_header_bar.dart';
+import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
@@ -54,7 +55,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
                             builder: (popularProducts) {
                           return dotIndicator(pagesValuesToShare.currPageValue,
                               popularProducts);
-                        }), // TODO 여기서 또 GetBuilder 를 해야할까? 안해도 될거 같은데???
+                        }), //
                         SizedBox(
                           height: Dimensions.height30,
                         ),
@@ -153,77 +154,85 @@ class _MainFoodPageState extends State<MainFoodPage> {
           itemCount: recommendedProducts.recommendedProductList.length,
           // recommendedProduct 의 전체 갯수
           itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.only(
-                  left: Dimensions.edgeInsets20,
-                  right: Dimensions.edgeInsets20,
-                  bottom: Dimensions.edgeInsets10),
-              child: Row(
-                children: [
-                  // image section
-                  Container(
-                    width: Dimensions.listViewImgSize,
-                    height: Dimensions.listViewImgSize,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      color: Colors.white38,
-                      image: DecorationImage(
-                          // recommended image 그림파일 받아온것
-                          image: NetworkImage(
-                            '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${recommendedProducts.recommendedProductList[index].img}',
-                          ),
-                          fit: BoxFit.cover),
-                    ),
-                    //child: Text('aa'),
-                  ),
-                  // text section
-                  Expanded(
-                    child: Container(
-                      height: Dimensions.listViewTextContainerSize,
-                      //width: 250,
+            return GestureDetector(
+              onTap: () {
+                Get.toNamed(RouteHelper.getRecommendedFood(
+                    index)); // recommended food detail 로 이동
+              },
+              child: Container(
+                margin: EdgeInsets.only(
+                    left: Dimensions.edgeInsets20,
+                    right: Dimensions.edgeInsets20,
+                    bottom: Dimensions.edgeInsets10),
+                child: Row(
+                  children: [
+                    // image section
+                    Container(
+                      width: Dimensions.listViewImgSize,
+                      height: Dimensions.listViewImgSize,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(Dimensions.radius20),
-                          bottomRight: Radius.circular(Dimensions.radius20),
-                        ),
-                        color: Colors.white,
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white38,
+                        image: DecorationImage(
+                            // recommended image 그림파일 받아온것
+                            image: NetworkImage(
+                              '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${recommendedProducts.recommendedProductList[index].img}',
+                            ),
+                            fit: BoxFit.cover),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: Dimensions.edgeInsets10,
-                            right: Dimensions.edgeInsets10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            BigText(
-                              text: recommendedProducts
-                                  .recommendedProductList[index].name!,
-                            ),
-                            SmallText(text: 'With chinese characteristics'),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                IconAndText(
-                                    iconData: Icons.circle_sharp,
-                                    text: 'Normal',
-                                    iconColor: AppColors.iconColor1),
-                                IconAndText(
-                                    iconData: Icons.location_on,
-                                    text: '1.7km',
-                                    iconColor: AppColors.mainColor),
-                                IconAndText(
-                                    iconData: Icons.circle_sharp,
-                                    text: '32min',
-                                    iconColor: AppColors.iconColor2),
-                              ],
-                            ),
-                          ],
+                      //child: Text('aa'),
+                    ),
+                    // text section
+                    Expanded(
+                      child: Container(
+                        height: Dimensions.listViewTextContainerSize,
+                        //width: 250,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(Dimensions.radius20),
+                            bottomRight: Radius.circular(Dimensions.radius20),
+                          ),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: Dimensions.edgeInsets10,
+                              right: Dimensions.edgeInsets10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BigText(
+                                text: recommendedProducts
+                                    .recommendedProductList[index].name!,
+                              ),
+                              SmallText(text: 'With chinese characteristics'),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  IconAndText(
+                                      iconData: Icons.circle_sharp,
+                                      text: 'Normal',
+                                      iconColor: AppColors.iconColor1),
+                                  IconAndText(
+                                      iconData: Icons.location_on,
+                                      text: '1.7km',
+                                      iconColor: AppColors.mainColor),
+                                  IconAndText(
+                                      iconData: Icons.circle_sharp,
+                                      text: '32min',
+                                      iconColor: AppColors.iconColor2),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }),

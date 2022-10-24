@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
+import 'package:food_delivery/pages/home/main_food_page.dart';
+import 'package:food_delivery/routes/route_helper.dart';
+import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/readmore_conversion.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/App_Column.dart';
 import 'package:food_delivery/widget/app_icon.dart';
 import 'package:food_delivery/widget/big_text.dart';
+import 'package:get/get.dart';
 
-class PopularFoodDetail extends StatefulWidget {
-  const PopularFoodDetail({Key? key}) : super(key: key);
+class PopularFoodDetail extends StatelessWidget {
+  int pageId; // 라우터를 통해서 페이지 번호를 받아서
+  PopularFoodDetail({ required this.pageId, Key? key}) : super(key: key);
 
-  @override
-  State<PopularFoodDetail> createState() => _PopularFoodDetailState();
-}
-
-class _PopularFoodDetailState extends State<PopularFoodDetail> {
   // 정말 관건은 Positioned 을 사용하지 말자.
   @override
   Widget build(BuildContext context) {
+
+
     ReadMoreTextConversion readMoreTextConversion = ReadMoreTextConversion(
-      'Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.Chicken marinated in a spiced yogurt s place in a large pot. then layered with fried onions (cheeky easy sub below!), fresh coriander/cilanto, then par boild water. You can make it with a 15 mins and save some for the next meal time. It is so delicious.',
+      Get.find<PopularProductController>().popularProductList[pageId].description!,
       trimLines: 3,
       colorClickableText: Colors.pink,
       trimMode: TrimModeC.Line,
@@ -50,10 +53,11 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
               // 가로 세로를 반드시 정해주어야 하고.. 여기서는 height 에 맞춘다
               width: double.maxFinite,
               height: Dimensions.popularFoodImgSize,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: NetworkImage(
-                          'https://thumb.zumst.com/640x480/https://static.hubzum.zumst.com/hubzum/2020/04/03/09/b051210b4f8c462a91e03ee029e036a0.jpg'),
+                      image: NetworkImage(AppConstants.BASE_URL +
+                          AppConstants.UPLOAD_URL +
+                          Get.find<PopularProductController>().popularProductList[pageId].img!),
                       fit: BoxFit.cover)),
             ),
             // back & shopping cart icon button
@@ -66,8 +70,12 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
               //height: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  AppIcon(icon: Icons.arrow_back),
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(RouteHelper.initial);
+                    },
+                      child: AppIcon(icon: Icons.arrow_back)), // 뒤로 가기 버턴
                   AppIcon(icon: Icons.shopping_cart_outlined)
                 ],
               ),
@@ -83,8 +91,8 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const AppColumn(
-                    title: 'JJajang Sauce, Egg with Rice',
+                  AppColumn(
+                    title: Get.find<PopularProductController>().popularProductList[pageId].name!,
                   ),
                   SizedBox(
                     height: Dimensions.height20,
@@ -96,7 +104,6 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                       )),
                   InkWell(
                     onTap: () {
-                      setState(() {});
                     },
                     child: readMoreTextConversion,
                   ),
@@ -166,7 +173,8 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BigText(
-                    text: '\$0.08',
+                    size: Dimensions.font16,
+                    text: '\$' + Get.find<PopularProductController>().popularProductList[pageId].price.toString(),
                     color: Colors.black45,
                   ),
                   SizedBox(

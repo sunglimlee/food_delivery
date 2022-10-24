@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/model/products_model.dart';
+import 'package:food_delivery/pages/food/popular_food_detail.dart';
 import 'package:food_delivery/pages/home/main_food_page.dart';
+import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
@@ -114,11 +116,17 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     return Transform(
       // 이렇게 감싸주면 바뀌는구나.
       transform: matrix4,
-      child: Stack(
-        children: [
-          _mainBody(position, popularProduct),
-          _subBody(popularProduct),
-        ],
+      child: GestureDetector(
+        onTap: () {
+          print('popular food 로 전달된 pageId 값은 $position 입니다.');
+          Get.toNamed(RouteHelper.getPopularFood(position)); // 디테일 페이지로 이동
+        },
+        child: Stack(
+          children: [
+            _mainBody(position, popularProduct),
+            _subBody(popularProduct),
+          ],
+        ),
       ),
     );
   }
