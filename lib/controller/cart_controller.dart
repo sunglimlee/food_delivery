@@ -24,20 +24,20 @@ class CartController extends GetxController {
   // 그래서 그안에서 CartModel 을 만들어서 맵에다가 넣어주게 되는거다.
   void addItem(ProductModel product, int quantity) {
     // 만약 기존에 id 값이 존재하고 있다면 거기에다가 quantity 를 추가해주어야 한다.
-    if(_items.containsKey(product.id!)) {
+    if (_items.containsKey(product.id!)) {
       _items.update(product.id!, (value) {
         return CartModel(
             id: value.id!,
             name: value.name!,
             price: value.price,
             img: value.img,
-            quantity: value.quantity! + quantity, // 맞는 말이네.. 기존에 있는건 그대로 두고 거기에 추가로 더하는 거니깐.
+            quantity: value.quantity! + quantity,
+            // 맞는 말이네.. 기존에 있는건 그대로 두고 거기에 추가로 더하는 거니깐.
             isExit: true,
             time: DateTime.now().toString());
       });
     } else {
       if (quantity > 0) {
-
         print("length of the item is ${_items.length.toString()}");
         // 중복된 자료가 들어가는 걸 방지하기 위해서
         _items.putIfAbsent(product.id!, () {
@@ -57,24 +57,31 @@ class CartController extends GetxController {
               time: DateTime.now().toString());
         });
       } else {
-        Get.snackbar("Item Count", "You should at least add an item in the cart", backgroundColor: AppColors.mainColor, colorText: Colors.black);
+        Get.snackbar(
+            "Item Count", "You should at least add an item in the cart",
+            backgroundColor: AppColors.mainColor, colorText: Colors.black);
       }
     }
   }
+
   // 서버에서 받아온 ProductModel.id 와 Map 안에 들어있는 CartModel.id 가 같은게 있는지 확인해서 들어갈 때 그 값을 보여주고 add, remove 를 해주도록 한다. 그게 제일 맞는것 같다.
   bool existInCart(ProductModel product) {
-    if (_items.containsKey(product.id!)) { // 맵에 값이 있는지 확인해서 true, false
+    if (_items.containsKey(product.id!)) {
+      // 맵에 값이 있는지 확인해서 true, false
       return true;
     }
     return false;
   }
+
   // 그래서 맵에 값이 있다면 그 값을 받아오는 함수.
   // 여기서도 잘봐라.. 로컬변수를 초기화 하고 그값을 조건문에서 바꾸고 나서 맨마지막에 로컬값을 리턴을 해준다. 아주 중요한 내용이다.
   int getQuantity(ProductModel product) {
     var quantity = 0; // 수량을 저장할 임시 로컬값.
     if (_items.containsKey(product.id!)) {
-      _items.forEach((key, value) { // 맵을 한바퀴 돌리면서
-        if (key == product.id) { // 키값이 같은게 있는지 확인한 후
+      _items.forEach((key, value) {
+        // 맵을 한바퀴 돌리면서
+        if (key == product.id) {
+          // 키값이 같은게 있는지 확인한 후
           print("in carat_controller. ${value.quantity}");
           quantity = value.quantity!;
         }
@@ -87,7 +94,8 @@ class CartController extends GetxController {
   int get totalItems {
     var totalQuantity = 0;
     _items.forEach((key, value) {
-      totalQuantity += value.quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
+      totalQuantity += value
+          .quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
     });
 
     return totalQuantity;

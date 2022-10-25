@@ -263,11 +263,7 @@ class PopularFoodDetail extends StatelessWidget {
                     children: [
                       BigText(
                         size: Dimensions.font16,
-                        text: '\$' +
-                            Get.find<PopularProductController>()
-                                .popularProductList[pageId]
-                                .price
-                                .toString(),
+                        text: '\$${Get.find<PopularProductController>().quantity * product.price!}',
                         color: Colors.black45,
                       ),
                       SizedBox(
