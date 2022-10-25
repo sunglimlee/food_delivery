@@ -24,6 +24,7 @@ class Dimensions {
   // text sizes
   static double smallTextSize = biggerAxis / (844 / 14);
   static double bigTextSize = biggerAxis / (844 / 20);
+  static double font12 = biggerAxis / (844 / 12);
   static double font16 = biggerAxis / (844 / 16);
   static double font20 = biggerAxis / (844 / 20);
   static double font26 = biggerAxis / (844 / 26);

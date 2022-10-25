@@ -82,4 +82,14 @@ class CartController extends GetxController {
     }
     return quantity;
   }
+
+  // 전체적인 총 갯수를 구하는 건가? 왜?
+  int get totalItems {
+    var totalQuantity = 0;
+    _items.forEach((key, value) {
+      totalQuantity += value.quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
+    });
+
+    return totalQuantity;
+  }
 }

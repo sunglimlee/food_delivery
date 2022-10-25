@@ -19,10 +19,12 @@ class PopularFoodDetail extends StatelessWidget {
   // 정말 관건은 Positioned 을 사용하지 말자.
   @override
   Widget build(BuildContext context) {
-    var product = Get.find<PopularProductController>().popularProductList[pageId];// product 를 받아서.
-    print("in popular_food_detail. value of pageid is ${pageId} and value of product is ${product}");
-    Get.find<PopularProductController>()
-        .initProduct(product, Get.find<CartController>()); // 이거때메 무조건 0 으로 초기화한다.
+    var product = Get.find<PopularProductController>()
+        .popularProductList[pageId]; // product 를 받아서.
+    print(
+        "in popular_food_detail. value of pageid is ${pageId} and value of product is ${product}");
+    Get.find<PopularProductController>().initProduct(
+        product, Get.find<CartController>()); // 이거때메 무조건 0 으로 초기화한다.
 
     ReadMoreTextConversion readMoreTextConversion = ReadMoreTextConversion(
       Get.find<PopularProductController>()
@@ -84,7 +86,37 @@ class PopularFoodDetail extends StatelessWidget {
                         Get.toNamed(RouteHelper.initial);
                       },
                       child: AppIcon(icon: Icons.arrow_back)), // 뒤로 가기 버턴
-                  AppIcon(icon: Icons.shopping_cart_outlined)
+                  GetBuilder<PopularProductController>(
+                    builder: (controller) {
+                      return Stack(
+                        children: [
+                          AppIcon(icon: Icons.shopping_cart_outlined),
+                          //전체 아이템 숫자가 shopping cart 아이콘 안 우측 상단에 나타나도록 한다.
+                          Get.find<PopularProductController>().totalItems >= 1
+                              ? const Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: AppIcon(
+                                    icon: Icons.circle,
+                                    size: 20,
+                                    iconColor: Colors.transparent,
+                                    backgroundColor: AppColors.mainColor,
+                                  ))
+                              : Container(),
+                          Get.find<PopularProductController>().totalItems >= 1
+                              ? Positioned(
+                                  right: Get.find<PopularProductController>().totalItems < 9 ? 6 : 3,
+                                  top: Get.find<PopularProductController>().totalItems < 9 ? 3 : 3,
+                                  child: BigText(
+                                    text:  Get.find<PopularProductController>().totalItems.toString(),
+                                    size: Dimensions.font12,
+                                    color: Colors.red[900],
+                                  ))
+                              : Container(),
+                        ],
+                      );
+                    },
+                  )
                 ],
               ),
             ),
@@ -218,7 +250,8 @@ class PopularFoodDetail extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  popularProduct.addItem(Get.find<PopularProductController>().popularProductList[pageId]!);
+                  popularProduct.addItem(Get.find<PopularProductController>()
+                      .popularProductList[pageId]!);
                 },
                 child: Container(
                   padding: EdgeInsets.all(Dimensions.edgeInsets20),
