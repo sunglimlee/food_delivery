@@ -1,5 +1,7 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/cart_controller.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/model/products_model.dart';
 import 'package:food_delivery/routes/route_helper.dart';
@@ -22,6 +24,9 @@ class RecommendedFoodDetail extends StatelessWidget {
     // 선택한 페이지의 프로덕트
     ProductModel product =
         Get.find<RecommendedProductController>().recommendedProductList[pageId];
+    // 이줄에서 알아야 할 제일 중요한건 Get 으로 하여금 CartController 를 찾게 해서 항상 하나만 찾게 되도록 한다는 거다. Shopping Cart 이므로 항상 한개의 객체를 가지고 다루어 져야 한다.
+    // 이미 Get.layput 이나 get.put 을 통해서 미리 메모리에 만들어져 올라가 있는 걸 사용한다.
+    //Get.find<RecommendedProductController>().initProduct(Get.find<CartController>()); // 컨트롤러에서 함수를 찾아서 실행.. initProduct 를 통해서 디테일 페이지를 보여줄 때 quantity 를 초기화를 한다.
 
     return Scaffold(
       //backgroundColor: Colors.grey,

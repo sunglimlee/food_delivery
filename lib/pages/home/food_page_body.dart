@@ -63,7 +63,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PopularProductController>(
-      builder: (popularProducts) {
+      builder: (popularProducts) { // update() 로 변경이 일어날때 마다 GetBuilder 가 실행되고 동시에 변경이 일어난 컨트롤러를 사용할 수 있게 된다.
         // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
         widget.pagesValuesToShare.pagesTotalValue =
             popularProducts.popularProductList.length;

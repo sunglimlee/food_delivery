@@ -1,6 +1,8 @@
+import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/data/api/api_client.dart';
+import 'package:food_delivery/data/repository/cart_repo.dart';
 import 'package:food_delivery/data/repository/popular_product_repo.dart';
 import 'package:food_delivery/data/repository/recommended_product_repo.dart';
 import 'package:food_delivery/utils/app_constants.dart';
@@ -20,10 +22,12 @@ Future<void> init() async {
   // 이것도 계속 살아 있다.
   Get.lazyPut(() => PopularProductRepo(apiClient: Get.find<ApiClient>()));
   Get.lazyPut(() => RecommendedProductRepo(apiClient: Get.find<ApiClient>()));
+  Get.lazyPut(() => CartRepo());
 
   // controller
   Get.lazyPut(() => PopularProductController(
       popularProductRepo: Get.find<PopularProductRepo>()));
   Get.lazyPut(() => RecommendedProductController(
       recommendedProductRepo: Get.find<RecommendedProductRepo>()));
+  Get.lazyPut(() => CartController(cartRepo: Get.find<CartRepo>()));
 }

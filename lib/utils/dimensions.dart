@@ -53,6 +53,7 @@ class Dimensions {
   static double radius30 = biggerAxis / (844 / 30);
 
   // icon
+  static double icon20 = biggerAxis / (844 / 20);
   static double icon24 = biggerAxis / (844 / 24);
   static double icon16 = biggerAxis / (844 / 16);
 
