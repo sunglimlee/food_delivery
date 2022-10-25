@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
+import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/data/repository/cart_repo.dart';
 import 'package:food_delivery/model/cart_model.dart';
 import 'package:food_delivery/model/products_model.dart';
@@ -14,7 +16,38 @@ class CartController extends GetxController {
 
   CartController({required this.cartRepo});
 
-  Map<int, CartModel> _items = {}; // 여기 맵을 이용해서 데이터를 다 저장하고..
+  //final RxMap<int, CartModel> _items = <int, CartModel>{}.obs; // 여기 맵을 이용해서 데이터를 다 저장하고..
+  Map<int, CartModel> _items = {};
+
+  //https://stackoverflow.com/questions/63841151/flutter-dismiss-selected-dialog-with-getx
+  removeItems(int key) async {
+    Get.dialog(
+      AlertDialog(
+        title: Text("Shopping Cart"),
+        content: Text("Do you want to remove this item from Shopping Cart?"),
+        actions: <Widget>[
+          ElevatedButton(
+            child: Text("YES"),
+            onPressed: () {
+              _items.remove(key);
+              update();
+              Get.find<PopularProductController>().update();
+              Get.find<RecommendedProductController>().update();
+              Get.back();
+            },
+          ),
+          ElevatedButton(
+            child: Text("NO"),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+        ],
+      ),
+    );
+    //_items.remove(key);
+  }
+
   Map<int, CartModel> get items => _items;
 
   // 맵에 넣는 함수
@@ -25,17 +58,22 @@ class CartController extends GetxController {
   void addItem(ProductModel product, int quantity) {
     // 만약 기존에 id 값이 존재하고 있다면 거기에다가 quantity 를 추가해주어야 한다.
     if (_items.containsKey(product.id!)) {
+      //print("in CartController. ${product.id!}");
       _items.update(product.id!, (value) {
         return CartModel(
-            id: value.id!,
-            name: value.name!,
-            price: value.price,
-            img: value.img,
-            quantity: value.quantity! + quantity,
-            // 맞는 말이네.. 기존에 있는건 그대로 두고 거기에 추가로 더하는 거니깐.
-            isExit: true,
-            time: DateTime.now().toString());
+          id: value.id!,
+          name: value.name!,
+          price: value.price,
+          img: value.img,
+          quantity: value.quantity! + quantity,
+          // 맞는 말이네.. 기존에 있는건 그대로 두고 거기에 추가로 더하는 거니깐.
+          isExit: true,
+          time: DateTime.now().toString(),
+          product: product,
+        );
       });
+      print(
+          "in CartController. ${product.id!}. ${_items[product.id!]!.quantity}");
     } else {
       if (quantity > 0) {
         print("length of the item is ${_items.length.toString()}");
@@ -48,13 +86,15 @@ class CartController extends GetxController {
             print("quantity is ${value.quantity.toString()}");
           });
           return CartModel(
-              id: product.id,
-              name: product.name!,
-              price: product.price,
-              img: product.img,
-              quantity: quantity,
-              isExit: true,
-              time: DateTime.now().toString());
+            id: product.id,
+            name: product.name!,
+            price: product.price,
+            img: product.img,
+            quantity: quantity,
+            isExit: true,
+            time: DateTime.now().toString(),
+            product: product,
+          );
         });
       } else {
         Get.snackbar(
@@ -62,6 +102,7 @@ class CartController extends GetxController {
             backgroundColor: AppColors.mainColor, colorText: Colors.black);
       }
     }
+    update();
   }
 
   // 서버에서 받아온 ProductModel.id 와 Map 안에 들어있는 CartModel.id 가 같은게 있는지 확인해서 들어갈 때 그 값을 보여주고 add, remove 를 해주도록 한다. 그게 제일 맞는것 같다.
@@ -99,5 +140,13 @@ class CartController extends GetxController {
     });
 
     return totalQuantity;
+  }
+
+  // Shopping Cart 에서 사용할 List 로서 CartModel 을 가지고 있는 List 로 구성한다.
+  List<CartModel> get getItems {
+    // 맵의 entries 를 통해서 전체를 돌면서 그안에 map 함수를 통해서 e.value 값을 리턴하고 그 리턴한 값들을 toList() 로 배열로 만들어서 리턴한다. 두번 리턴한다는 거지.
+    return _items.entries.map((e) {
+      return e.value;
+    }).toList();
   }
 }

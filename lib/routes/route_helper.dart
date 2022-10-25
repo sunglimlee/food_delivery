@@ -1,3 +1,4 @@
+import 'package:food_delivery/pages/cart/cart_page.dart';
 import 'package:food_delivery/pages/food/popular_food_detail.dart';
 import 'package:food_delivery/pages/food/recommended_food_detail.dart';
 import 'package:food_delivery/pages/home/main_food_page.dart';
@@ -7,6 +8,7 @@ class RouteHelper {
   static const String initial = "/"; // 이곳이 홈페이지이다.
   static const String popularFood = "/popular-food";
   static const String recommendedFood = "/recommended-food";
+  static const String cartPage = "/cart-page";
 
   static String getInitial() => '$initial';
 
@@ -14,6 +16,8 @@ class RouteHelper {
       '$popularFood?pageId=$pageId'; // 이부분을 잘 봐라. 이렇게 넘기면 아주 쉽게 페이지 값을 넘길 수 있구나.
   static String getRecommendedFood(int pageId) =>
       '$recommendedFood?pageId=$pageId';
+
+  static String getCartPage() => '$cartPage';
 
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => const MainFoodPage()),
@@ -36,5 +40,9 @@ class RouteHelper {
       },
       transition: Transition.circularReveal,
     ),
+    GetPage(
+        name: cartPage,
+        page: () => const CartPage(),
+        transition: Transition.fadeIn),
   ];
 }
