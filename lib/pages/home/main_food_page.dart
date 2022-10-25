@@ -157,7 +157,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
             return GestureDetector(
               onTap: () {
                 Get.toNamed(RouteHelper.getRecommendedFood(
-                    index)); // recommended food detail 로 이동
+                    index, RouteHelper.initial)); // recommended food detail 로 이동
               },
               child: Container(
                 margin: EdgeInsets.only(

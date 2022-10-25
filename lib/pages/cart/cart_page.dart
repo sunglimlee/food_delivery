@@ -98,7 +98,7 @@ class CartPage extends StatelessWidget {
                                 var popularListIndex =
                                     Get.find<PopularProductController>()
                                         .popularProductList
-                                        .indexOf(cartController
+                                        .indexOf(cartController // ListMap
                                             .getItems[index].product!);
                                 // 리스트에서 Popular food 의 해당 프로덕트에 대한 인덱스를 알아낸다.
                                 var recommendedListIndex =
@@ -113,7 +113,7 @@ class CartPage extends StatelessWidget {
                                     2) {
                                   // popular items
                                   Get.toNamed(RouteHelper.getPopularFood(
-                                      popularListIndex));
+                                      popularListIndex, RouteHelper.cartPage));
                                   print(
                                       "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
                                 } else {
@@ -121,7 +121,7 @@ class CartPage extends StatelessWidget {
                                   print(
                                       "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
                                   Get.toNamed(RouteHelper.getRecommendedFood(
-                                      recommendedListIndex));
+                                      recommendedListIndex, RouteHelper.cartPage));
                                 }
                               },
                               child: Container(

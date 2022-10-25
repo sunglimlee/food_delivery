@@ -12,10 +12,10 @@ class RouteHelper {
 
   static String getInitial() => '$initial';
 
-  static String getPopularFood(int pageId) =>
-      '$popularFood?pageId=$pageId'; // 이부분을 잘 봐라. 이렇게 넘기면 아주 쉽게 페이지 값을 넘길 수 있구나.
-  static String getRecommendedFood(int pageId) =>
-      '$recommendedFood?pageId=$pageId';
+  static String getPopularFood(int pageId, whichPage) =>
+      '$popularFood?pageId=$pageId&whichPage=$whichPage'; // 이부분을 잘 봐라. 이렇게 넘기면 아주 쉽게 페이지 값을 넘길 수 있구나.
+  static String getRecommendedFood(int pageId, whichPage) =>
+      '$recommendedFood?pageId=$pageId&whichPage=$whichPage';
 
   static String getCartPage() => '$cartPage';
 
@@ -28,7 +28,8 @@ class RouteHelper {
         // 그래서 이게 무조건 실행되는구나.
         int pageId = int.parse(Get.parameters[
             'pageId']!); // 여기를 잘봐라.. 결정적인 곳이다. 파라미터값을 여기서 파싱하고 있다. 그리고는 PopularFoodDetail 로 넘겨주겠지
-        return PopularFoodDetail(pageId: pageId!);
+        String whichPage = Get.parameters['whichPage'].toString();
+        return PopularFoodDetail(pageId: pageId, whichPage: whichPage);
       },
       transition: Transition.circularReveal,
     ),
@@ -36,7 +37,8 @@ class RouteHelper {
       name: recommendedFood,
       page: () {
         int pageId = int.parse(Get.parameters['pageId']!);
-        return RecommendedFoodDetail(pageId: pageId!);
+        String whichPage = Get.parameters['whichPage'].toString();
+        return RecommendedFoodDetail(pageId: pageId, whichPage: whichPage);
       },
       transition: Transition.circularReveal,
     ),

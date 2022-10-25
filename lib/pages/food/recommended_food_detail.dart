@@ -15,8 +15,9 @@ import 'package:get/get.dart';
 
 class RecommendedFoodDetail extends StatelessWidget {
   final int pageId;
+  final String whichPage;
 
-  const RecommendedFoodDetail({Key? key, required this.pageId})
+  const RecommendedFoodDetail({Key? key, required this.pageId, required String this.whichPage})
       : super(key: key);
 
   @override
@@ -46,7 +47,7 @@ class RecommendedFoodDetail extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(RouteHelper.getInitial()); // 홈페이지로 이동
+                    Get.toNamed(whichPage); // 홈페이지로 이동
                   },
                   child: const AppIcon(
                     icon: Icons.clear,
