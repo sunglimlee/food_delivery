@@ -15,7 +15,10 @@ import 'package:get/get.dart';
 class PopularFoodDetail extends StatelessWidget {
   final int pageId; // 라우터를 통해서 페이지 번호를 받아서
   final String whichPage;
-  const PopularFoodDetail({required this.pageId, Key? key, required String this.whichPage}) : super(key: key);
+
+  const PopularFoodDetail(
+      {required this.pageId, Key? key, required String this.whichPage})
+      : super(key: key);
 
   // 정말 관건은 Positioned 을 사용하지 말자.
   @override
@@ -86,7 +89,8 @@ class PopularFoodDetail extends StatelessWidget {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Get.toNamed(whichPage); // 함수에 tag 파라미터를 넣으므로써 원하는 곳으로 Routing 을 구현한다.
+                        Get.toNamed(
+                            whichPage); // 함수에 tag 파라미터를 넣으므로써 원하는 곳으로 Routing 을 구현한다.
                       },
                       child: AppIcon(icon: Icons.arrow_back)), // 뒤로 가기 버턴
                   GetBuilder<PopularProductController>(

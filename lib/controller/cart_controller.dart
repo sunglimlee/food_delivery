@@ -149,4 +149,15 @@ class CartController extends GetxController {
       return e.value;
     }).toList();
   }
+
+  double get totalAmount {
+    double total = 0;
+    // 내가 직접한다. 현재 가지고 있는 모든 가용자원을 다 사용한다.
+    List<CartModel> cartModelItems = getItems;
+    cartModelItems.forEach((element) {
+      total += element.quantity!.toDouble() * element.price!.toDouble();
+    });
+    print('in Cart_controller. totalAmount 힘수 실행후 리턴값은 ${total} 입니다.');
+    return total;
+  }
 }

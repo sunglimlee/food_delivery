@@ -17,7 +17,8 @@ class RecommendedFoodDetail extends StatelessWidget {
   final int pageId;
   final String whichPage;
 
-  const RecommendedFoodDetail({Key? key, required this.pageId, required String this.whichPage})
+  const RecommendedFoodDetail(
+      {Key? key, required this.pageId, required String this.whichPage})
       : super(key: key);
 
   @override

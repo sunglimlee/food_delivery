@@ -99,7 +99,8 @@ class CartPage extends StatelessWidget {
                                     Get.find<PopularProductController>()
                                         .popularProductList
                                         .indexOf(cartController // ListMap
-                                            .getItems[index].product!);
+                                            .getItems[index]
+                                            .product!);
                                 // 리스트에서 Popular food 의 해당 프로덕트에 대한 인덱스를 알아낸다.
                                 var recommendedListIndex =
                                     Get.find<RecommendedProductController>()
@@ -121,7 +122,8 @@ class CartPage extends StatelessWidget {
                                   print(
                                       "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
                                   Get.toNamed(RouteHelper.getRecommendedFood(
-                                      recommendedListIndex, RouteHelper.cartPage));
+                                      recommendedListIndex,
+                                      RouteHelper.cartPage));
                                 }
                               },
                               child: Container(
@@ -289,6 +291,92 @@ class CartPage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar:
+          GetBuilder<CartController>(builder: (cartController) {
+        return Container(
+          height: Dimensions.bottomeNavigationBarHeight,
+          padding: EdgeInsets.only(
+/*
+              top: Dimensions.edgeInsets30,
+              bottom: Dimensions.edgeInsets30,
+*/
+              left: Dimensions.edgeInsets20,
+              right: Dimensions.edgeInsets20),
+          decoration: BoxDecoration(
+            color: Colors.grey[200], // Colors.pink,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(Dimensions.radius20),
+                topRight: Radius.circular(Dimensions.radius20)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                // Shopping Cart 에 수량을 입력하기 위한 작업. 근데 quantity 만 가지고 다루고 있다.
+                //padding: EdgeInsets.all(Dimensions.edgeInsets20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.radius20),
+                    color: Colors.white),
+                child: Row(
+                  //crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: Dimensions.height10,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: Dimensions.edgeInsets20,
+                          bottom: Dimensions.edgeInsets20,
+                          left: Dimensions.edgeInsets5,
+                          right: Dimensions.edgeInsets5),
+                      child: BigText(
+                        text:
+                            "Total Items : ${cartController.totalItems.toString()}",
+                        //popularProduct.quantity.toString(), TODO
+                        color: Colors.black45,
+                      ),
+                    ),
+                    SizedBox(
+                      width: Dimensions.height10,
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  padding: EdgeInsets.only(
+                      top: Dimensions.edgeInsets20,
+                      bottom: Dimensions.edgeInsets20,
+                      left: Dimensions.edgeInsets15,
+                      right: Dimensions.edgeInsets15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.radius20),
+                      color: Colors.green[200]),
+                  child: Row(
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BigText(
+                        size: Dimensions.font16,
+                        text:
+                            '\$${double.parse(cartController.totalAmount.toString())}',
+                        color: Colors.black45,
+                      ),
+                      SizedBox(
+                        width: Dimensions.height20,
+                      ),
+                      BigText(
+                        text: 'Checkout',
+                        color: Colors.black45,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
