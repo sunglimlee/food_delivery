@@ -2,6 +2,7 @@ import 'package:food_delivery/pages/cart/cart_page.dart';
 import 'package:food_delivery/pages/food/popular_food_detail.dart';
 import 'package:food_delivery/pages/food/recommended_food_detail.dart';
 import 'package:food_delivery/pages/home/main_food_page.dart';
+import 'package:food_delivery/widget/home_page.dart';
 import 'package:get/get.dart';
 
 class RouteHelper {
@@ -20,7 +21,7 @@ class RouteHelper {
   static String getCartPage() => '$cartPage';
 
   static List<GetPage> routes = [
-    GetPage(name: initial, page: () => const MainFoodPage()),
+    GetPage(name: initial, page: () => const HomePage()),
     GetPage(
       name: popularFood,
       // 맞네.. popularFood 로 들어오면 무조건 페이지 아이디 있다는거지. 함수로 전달하니깐.

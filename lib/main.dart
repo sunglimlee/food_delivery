@@ -6,6 +6,7 @@ import 'package:food_delivery/pages/food/popular_food_detail.dart';
 import 'package:food_delivery/pages/food/recommended_food_detail.dart';
 import 'package:food_delivery/pages/home/main_food_page.dart';
 import 'package:food_delivery/routes/route_helper.dart';
+import 'package:food_delivery/widget/home_page.dart';
 import 'package:get/get.dart';
 import 'helper/dependencies.dart' as dep;
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     Get.find<PopularProductController>().getPopularProductList();
     Get.find<RecommendedProductController>().getRecommendedProductList();
     return GetMaterialApp(
-      initialRoute: RouteHelper.initial,
+      initialRoute: RouteHelper.getInitial(),
       // 이곳이 홈페이지
       getPages: RouteHelper.routes,
       debugShowCheckedModeBanner: false,
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MainFoodPage(),
+      //home: const HomePage(),
       //home: const RecommendedFoodDetail(),
       //home: TestModel(),
     );
