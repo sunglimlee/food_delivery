@@ -43,15 +43,15 @@ class CartModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['price'] = price;
-    data['img'] = img;
-    data['quantity'] = quantity;
-    data['isexit'] = isExit;
-    data['time'] = time;
-    data['json'] = product?.toJson();
-    return data;
+    return {
+      "id": this.id,
+      "name": this.name,
+      "price": this.price,
+      "img": this.img,
+      "quantity": this.quantity,
+      "isexit": this.isExit,
+      "time": this.time,
+      "product": this.product?.toJson() // 여기서 다른 이름 json 으로 되어 있었다...
+    };
   }
 }

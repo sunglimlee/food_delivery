@@ -50,6 +50,8 @@ class CartController extends GetxController {
 
   Map<int, CartModel> get items => _items;
 
+  List<CartModel> storageItems = [];
+
   // 맵에 넣는 함수
   // addItem 함수를 이용해서 UI 에서 추가 버턴을 클릭하면 다시 Controller 가 추가를 하라는 명령을 CartRepo 에 내려준다.
   // 추가를 하기위해서 당연히 ProductModel 과 quantity 가 들어와야 하고.
@@ -103,7 +105,7 @@ class CartController extends GetxController {
       }
     }
     // 히스토리를 위해서 CartRepo 에 CartModel 을 저장한다.
-    cartRepo.addToCartList(getItems);
+    cartRepo.setCartList(getItems);
     update();
   }
 
@@ -161,5 +163,25 @@ class CartController extends GetxController {
     });
     print('in Cart_controller. totalAmount 힘수 실행후 리턴값은 ${total} 입니다.');
     return total;
+  }
+
+  List<CartModel> getCartData() {
+    // 최초에 실행시에만 이 함수를 실행시켜서 값을 불러들인다.
+    // 아마도 Repo 의 getCartList 에서 길이를 받아서 데이터가 있으면 그데이터를 이용하면 되겠네.. 어떤식으로 데이터를 보낼까? 당연히 객체로 보내면 되지.. List<CartModel>
+    //print("in Cart_controller. cartRepo.getCartList() ${cartRepo.getCartList()}");
+    setCart = cartRepo
+        .getCartList(); // 괭장히 멋진 내용이다. 왜냐면 Get 함수이면서 안에서 set 함수를 실행시키고 그리면서 다시 return 값을 넘겨주니깐..
+    return storageItems; // 최종목표는 _items 에 데이터를 넣는거다.
+  }
+
+  set setCart(List<CartModel> items) {
+    //cartRepo.setCartList(items);
+    storageItems = items;
+    print(
+        "in Cart_controller. Length of cart items ${storageItems.length.toString()}");
+
+    for (int i = 0; i < storageItems.length; i++) {
+      _items.putIfAbsent(storageItems[i].product!.id!, () => storageItems[i]);
+    }
   }
 }

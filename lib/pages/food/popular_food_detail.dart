@@ -119,12 +119,12 @@ class PopularFoodDetail extends StatelessWidget {
                             Get.find<PopularProductController>().totalItems >= 1
                                 ? Positioned(
                                     right: Get.find<PopularProductController>()
-                                                .totalItems <
+                                                .totalItems <=
                                             9
                                         ? 6
                                         : 3,
                                     top: Get.find<PopularProductController>()
-                                                .totalItems <
+                                                .totalItems <=
                                             9
                                         ? 3
                                         : 3,
