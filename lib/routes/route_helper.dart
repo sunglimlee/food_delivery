@@ -1,15 +1,18 @@
 import 'package:food_delivery/pages/cart/cart_page.dart';
 import 'package:food_delivery/pages/food/popular_food_detail.dart';
 import 'package:food_delivery/pages/food/recommended_food_detail.dart';
-import 'package:food_delivery/pages/home/main_food_page.dart';
+import 'package:food_delivery/pages/splash/splash_page.dart';
 import 'package:food_delivery/widget/home_page.dart';
 import 'package:get/get.dart';
 
 class RouteHelper {
+  static const String splashPage = "/splash-page";
   static const String initial = "/"; // 이곳이 홈페이지이다.
   static const String popularFood = "/popular-food";
   static const String recommendedFood = "/recommended-food";
   static const String cartPage = "/cart-page";
+
+  static String getSplashPage() => '$splashPage';
 
   static String getInitial() => '$initial';
 
@@ -21,6 +24,7 @@ class RouteHelper {
   static String getCartPage() => '$cartPage';
 
   static List<GetPage> routes = [
+    GetPage(name: splashPage, page: () => const SplashScreen()),
     GetPage(name: initial, page: () => const HomePage()),
     GetPage(
       name: popularFood,
@@ -30,6 +34,7 @@ class RouteHelper {
         int pageId = int.parse(Get.parameters[
             'pageId']!); // 여기를 잘봐라.. 결정적인 곳이다. 파라미터값을 여기서 파싱하고 있다. 그리고는 PopularFoodDetail 로 넘겨주겠지
         String whichPage = Get.parameters['whichPage'].toString();
+        print("in route_helper. whichPage value is ${whichPage}");
         return PopularFoodDetail(pageId: pageId, whichPage: whichPage);
       },
       transition: Transition.circularReveal,

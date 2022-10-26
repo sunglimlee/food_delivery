@@ -120,8 +120,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       child: GestureDetector(
         onTap: () {
           print('popular food 로 전달된 pageId 값은 $position 입니다.');
-          Get.toNamed(RouteHelper.getPopularFood(
-              position, RouteHelper.initial)); // 디테일 페이지로 이동
+          Get.toNamed(
+            RouteHelper.getPopularFood(position, RouteHelper.initial),
+          ); // 디테일 페이지로 이동
         },
         child: Stack(
           children: [

@@ -12,6 +12,10 @@ class Dimensions {
   static double smallerAxis =
       screenHeight >= screenWidth ? screenWidth : screenHeight;
 
+  // Splash Screen Logo and characters
+  static double splashLogo = biggerAxis / (844 / 300);
+  static double splashCharacter = biggerAxis / (844 / 80);
+
   // for food_page_body mother container
   static double pageView = biggerAxis / 2.64;
 
