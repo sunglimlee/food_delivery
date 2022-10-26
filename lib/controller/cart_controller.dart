@@ -102,6 +102,8 @@ class CartController extends GetxController {
             backgroundColor: AppColors.mainColor, colorText: Colors.black);
       }
     }
+    // 히스토리를 위해서 CartRepo 에 CartModel 을 저장한다.
+    cartRepo.addToCartList(getItems);
     update();
   }
 
