@@ -105,7 +105,7 @@ class CartController extends GetxController {
       }
     }
     // 히스토리를 위해서 CartRepo 에 CartModel 을 저장한다.
-    cartRepo.setCartList(getItems);
+    cartRepo.addToCartList(getItems);
     update();
   }
 
@@ -169,8 +169,7 @@ class CartController extends GetxController {
     // 최초에 실행시에만 이 함수를 실행시켜서 값을 불러들인다.
     // 아마도 Repo 의 getCartList 에서 길이를 받아서 데이터가 있으면 그데이터를 이용하면 되겠네.. 어떤식으로 데이터를 보낼까? 당연히 객체로 보내면 되지.. List<CartModel>
     //print("in Cart_controller. cartRepo.getCartList() ${cartRepo.getCartList()}");
-    setCart = cartRepo
-        .getCartList(); // 괭장히 멋진 내용이다. 왜냐면 Get 함수이면서 안에서 set 함수를 실행시키고 그리면서 다시 return 값을 넘겨주니깐..
+    setCart = cartRepo.getCartList(); // 괭장히 멋진 내용이다. 왜냐면 Get 함수이면서 안에서 set 함수를 실행시키고 그리면서 다시 return 값을 넘겨주니깐..
     return storageItems; // 최종목표는 _items 에 데이터를 넣는거다.
   }
 
@@ -183,5 +182,21 @@ class CartController extends GetxController {
     for (int i = 0; i < storageItems.length; i++) {
       _items.putIfAbsent(storageItems[i].product!.id!, () => storageItems[i]);
     }
+    cartRepo.addToCartList(storageItems); // 여기도 추가 해주어야지 정확히 되는거지. 그리고 히스토리에 저장할 때도 cart 리스트를 이용해서 저장이 되는거고...
+    print("in cart_controller. _items 의 값은 ${_items.length}");
+  }
+
+  void addToHistory() {
+    cartRepo.addToCartHistoryList();
+    clear();
+  }
+
+  void clear() {
+    _items = {}; // 전부다 지우고.
+    update(); // 다 지워지니깐 화면에서도 다지우고..
+  }
+
+  List<CartModel> getCartHistoryList() {
+    return cartRepo.getCartHistoryList();
   }
 }

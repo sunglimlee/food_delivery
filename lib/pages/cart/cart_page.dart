@@ -131,8 +131,13 @@ class CartPage extends StatelessWidget {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {},
+            GestureDetector( // 체크아웃 버턴 부분
+
+            onTap: () {
+                // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
+                print("in car_page. Tapped????");
+                cartController.addToHistory();
+              },
               child: Container(
                 padding: EdgeInsets.only(
                     top: Dimensions.edgeInsets20,
