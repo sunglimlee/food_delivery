@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
     // SharedPreperences 의 값을 불러들이기 위해서 CartController 를 사용한다.
     return GetMaterialApp(
       initialRoute: RouteHelper.getSplashPage(),
-      //home: const SplashScreen(),
       // 이곳이 홈페이지
       getPages: RouteHelper.routes,
       debugShowCheckedModeBanner: false,
@@ -44,6 +43,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      //home: const SplashScreen(),
       //home: const RecommendedFoodDetail(),
       //home: TestModel(),
     );

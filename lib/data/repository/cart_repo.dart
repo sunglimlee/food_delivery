@@ -18,7 +18,7 @@ class CartRepo extends GetxController {
 
   CartRepo(this.shardPreferences); // 리스트를 사용한 이유는?
 
-  void addToCartList(List<CartModel> cartList) {
+  void addToCartList(List<CartModel> cartList) { // 히스토리에 저장하기 위해서
     var time = DateTime.now().toString(); // 현재 시간을 설정해놓고
     // 이함수를 실행시킨다는 말은 이 CartRepo 객체가 존재한다는 거지..
     // CartModel object 를 string 으로 넣는다?

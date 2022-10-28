@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/base/no_data_page.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
@@ -97,7 +98,7 @@ class CartPage extends StatelessWidget {
               topLeft: Radius.circular(Dimensions.radius20),
               topRight: Radius.circular(Dimensions.radius20)),
         ),
-        child: Row(
+        child: (cartController.getItems.length > 0) ? Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
@@ -168,7 +169,7 @@ class CartPage extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ) : Container(),
       );
     });
   }
@@ -182,15 +183,14 @@ class CartPage extends StatelessWidget {
           left: Dimensions.edgeInsets20,
           right: Dimensions.edgeInsets20),
       //color: Colors.red,
-      child: MediaQuery.removePadding(
-        // 위의 패딩을 없애기 위해서 사용한다는데 흠.. 새로운거네.. // 못찾겠다. 그러니깐 자동으로 일정 패딩이 적용되는건가?
+      child: MediaQuery.removePadding( // 리스트뷰에 기본적으로 적용되는 padding 을 지워준다.
         context: Get.context!,
         removeTop: true,
         child: GetBuilder<CartController>(
           builder: (cartController) {
             return (cartController.getItems.length < 1)
                 ? _noProduct_inListViewPart()
-                : ListView.builder(
+                : ListView.builder( // 되도록이면 ListView.builder 를 사용하자. 대용량의 자료처리에 적합하다.
                     //padding: EdgeInsets.all(0), // 리스트뷰에도 자동으로 안쪽으로 패딩이 들어가는 구나.. 그래서 여기서 0을 해주던지 아니면 MediaQuery 를 이용해서 패딩을 강제로 없애든지 해야하는구나.
                     itemCount: cartController.getItems.length,
                     itemBuilder: ((context, index) {
@@ -210,7 +210,7 @@ class CartPage extends StatelessWidget {
                                         .indexOf(cartController // ListMap
                                             .getItems[index]
                                             .product!);
-                                // 리스트에서 Popular food 의 해당 프로덕트에 대한 인덱스를 알아낸다.
+                                // 리스트에서 Recommended food 의 해당 프로덕트에 대한 인덱스를 알아낸다.
                                 var recommendedListIndex =
                                     Get.find<RecommendedProductController>()
                                         .recommendedProductList
@@ -218,21 +218,27 @@ class CartPage extends StatelessWidget {
                                             .getItems[index].product!);
                                 print(
                                     "in CartPage. itemListIndex =  ${popularListIndex}");
-                                if (cartController
-                                        .getItems[index].product!.typeId ==
-                                    2) {
+                                if (popularListIndex >= 0) {
                                   // popular items
                                   Get.toNamed(RouteHelper.getPopularFood(
                                       popularListIndex, RouteHelper.cartPage));
                                   print(
                                       "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
                                 } else {
-                                  // recommended Items
-                                  print(
-                                      "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
-                                  Get.toNamed(RouteHelper.getRecommendedFood(
-                                      recommendedListIndex,
-                                      RouteHelper.cartPage));
+                                  if (recommendedListIndex < 0) { // 히스토리 페이지에서 가지고 프로덕트가 더이상 사용할 수 없을 수도 있기 때문에 그냥 라우팅 못한다고 메세지를 띄워준다.
+                                    Get.snackbar(
+                                        "History Product.", "Product review is not available for the history product.",
+                                        backgroundColor: AppColors.mainColor, colorText: Colors.black);
+
+                                  } else {
+                                    // recommended Items
+                                    print(
+                                        "in CartPage. cartController.getItems[index].product!.id! ${cartController
+                                            .getItems[index].product!.id!}");
+                                    Get.toNamed(RouteHelper.getRecommendedFood(
+                                        recommendedListIndex,
+                                        RouteHelper.cartPage));
+                                  }
                                 }
                               },
                               child: Container(
@@ -381,5 +387,5 @@ class CartPage extends StatelessWidget {
   }
 
   Widget _noProduct_inListViewPart() =>
-      const Center(child: Text("Shopping cart is emptied"));
+      Center(child: const NoDataPage(text: "Shopping cart is empty."));
 }

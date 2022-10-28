@@ -18,11 +18,11 @@ import 'package:transparent_image/transparent_image.dart';
 /// 페이지뷰를 이렇게 독립적으로 만들어서 나중에 끼워 넣는 방식으로 사용한다.
 /// 아주 좋은 방법인것 같다.
  */
-typedef double2VoidFunc = void Function();
+typedef double2VoidFunc = void Function(); // 이렇게 콜백함수의 형정의를 해주고..
 
 class FoodPageBody extends StatefulWidget {
   final double2VoidFunc callbackForCurrPageValue;
-  final PagesValuesToShare pagesValuesToShare;
+  final PagesValuesToShare pagesValuesToShare; // 이것도 외부에서 이미 만들어진 객체의 포인터를 가지고 온것.. 여기서 바꾸면 외부도 바뀐다.
 
   const FoodPageBody(
       {Key? key,
@@ -43,11 +43,11 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   void initState() {
     super.initState();
     // 내가 PageController 가 움직일때 값을 받아오기 위해서 Listener 를 연결해주어야 한다.
-    pageController.addListener(() {
+    pageController.addListener(() { // 움직일때마다 setState 가 작동되게 했네.. // 나중에 반드시 dispose() 를 해주어라.
       setState(() {
         widget.pagesValuesToShare.currPageValue =
             pageController.page!; // 숫자가 0.0 - 1.0 까지 값이 변경되고 있네. page 값으로.. !!!
-        widget.callbackForCurrPageValue();
+        widget.callbackForCurrPageValue(); // 그래서 아주 조금씩 움직이는데도 인디케이터도 조금씩 따라서 움직이는거다.
         print(
             'Current value is ${widget.pagesValuesToShare.currPageValue.toString()}');
       });
@@ -63,19 +63,19 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PopularProductController>(
-      builder: (popularProducts) {
+      builder: (popularProductController) {
         // update() 로 변경이 일어날때 마다 GetBuilder 가 실행되고 동시에 변경이 일어난 컨트롤러를 사용할 수 있게 된다.
         // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
         widget.pagesValuesToShare.pagesTotalValue =
-            popularProducts.popularProductList.length;
+            popularProductController.popularProductList.length;
         return Container(
           height: Dimensions.pageView,
           child: PageView.builder(
               controller: pageController,
-              itemCount: popularProducts.popularProductList.length,
+              itemCount: popularProductController.popularProductList.length,
               itemBuilder: (context, position) {
                 return _PageViewBuilderItem(
-                    position, popularProducts.popularProductList[position]);
+                    position, popularProductController.popularProductList[position]);
               }),
         );
       },
@@ -114,8 +114,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, _height * (1 - _scaleFactor) / 2, 1);
     }
-    return Transform(
-      // 이렇게 감싸주면 바뀌는구나.
+    return Transform( // 이렇게 감싸주면 바뀌는구나.
       transform: matrix4,
       child: GestureDetector(
         onTap: () {
@@ -137,7 +136,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   Widget _subBody(ProductModel popularProduct) {
     // 옆에 패딩을 넣어주기 위해서 Container 를 또 넣어주기로 했지..
     return Align(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.bottomCenter, // 이부분때문에 밑으로 내려가는거다.
       child: Container(
         height: Dimensions.pageViewTextContainer,
         margin: EdgeInsets.only(
@@ -177,7 +176,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         //color: position.isEven ? Colors.green : Colors.pink,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: FadeInImage.memoryNetwork(
+          image: FadeInImage.memoryNetwork( // 이것도 해보려고 했는데 잘 안되더라..
             placeholder: kTransparentImage,
             //const AssetImage('assets/images/loading.png'),
             image:

@@ -22,8 +22,8 @@ class MainFoodPage extends StatefulWidget {
 
 class _MainFoodPageState extends State<MainFoodPage> {
   //double currPageValue = 0.0;
-  int pagesTotalValue = 0;
-  PagesValuesToShare pagesValuesToShare = PagesValuesToShare();
+  //int pagesTotalValue = 0; // 왜 아무것도 없지?
+  PagesValuesToShare pagesValuesToShare = PagesValuesToShare(); // 다른 페이지에서 사용하려고 만든 객체다??
 
   // RenderBox was not laid out: RenderRepaintBoundary#4c015 NEEDS-LAYOUT NEEDS-PAINT 문제 해결에 좋은 예제.
   // Expanded 와 SingChildScrollView 는 한번에 묶어져 있어야 한다.
@@ -47,7 +47,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
                     Column(
                       children: [
                         // Slider Section
-                        FoodPageBody(
+                        FoodPageBody( // 결국 변경하고자하는 값과 setState 를 품은 update 함수를 같이 넘겨 주어야 안쪽에서 변경되는걸 여기 외부에서 바꿀 수 있네.
                           pagesValuesToShare: pagesValuesToShare,
                           callbackForCurrPageValue: update,
                         ),
@@ -87,7 +87,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
   }
 
   void update() {
-    setState(() {
+    setState(() { // currentIndexPage 값을 외부에서 바꾸기 때문에 계속 update() 를 해주어야 화면이 바뀐다.
       // 옮길때마다 setState 를 해주어야 indicator 가 바뀐다.
       // pagesValuesToShare.currPageValue = currentPageValue);
     });
@@ -143,7 +143,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
   }
 
   Widget _recommendedListView(
-      RecommendedProductController recommendedProducts) {
+      RecommendedProductController recommendedProductController) {
     return SizedBox(
       //height: 700,
       child: ListView.builder(
@@ -151,7 +151,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
           physics: const NeverScrollableScrollPhysics(),
           // 이러니깐 스크롤이 안되게 하는구나.
           shrinkWrap: true,
-          itemCount: recommendedProducts.recommendedProductList.length,
+          itemCount: recommendedProductController.recommendedProductList.length,
           // recommendedProduct 의 전체 갯수
           itemBuilder: (context, index) {
             return GestureDetector(
@@ -177,7 +177,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
                         image: DecorationImage(
                             // recommended image 그림파일 받아온것
                             image: NetworkImage(
-                              '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${recommendedProducts.recommendedProductList[index].img}',
+                              '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${recommendedProductController.recommendedProductList[index].img}',
                             ),
                             fit: BoxFit.cover),
                       ),
@@ -204,7 +204,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               BigText(
-                                text: recommendedProducts
+                                text: recommendedProductController
                                     .recommendedProductList[index].name!,
                               ),
                               SmallText(text: 'With chinese characteristics'),

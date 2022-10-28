@@ -19,6 +19,390 @@
 - helper/dependencies.dart (init() 함수부분)
 - model/products_model.dart ( Products 와 Product 두개로 나뉘게 된다.)
 
+# Map 과 List 에 관련된 내용
+> 항상 컨트롤러에서 Repository 로 함수를 실행하도록 해라.. 두개를 만든것 같지만 항상 그렇게 디자인을 해야한다.
+> update() 하는것도 잊지말고
+```dart
+  var getCartHistoryList = Get.find<CartController>().getCartHistoryList().reversed.toList(); // 최신 날짜순으로 보여주려고 reverse 했다.
+  Map<String, int> cartItemsPerOrder = {};
+  for (int i = 0; i < getCartHistoryList.length; i++) { // 같은 갯수가 몇개인지 알기 위함.
+    if (cartItemsPerOrder.containsKey(getCartHistoryList[i].time)) {
+      // key time 의 시간자체를 key 로 만든다는 것.
+      cartItemsPerOrder.update(getCartHistoryList[i].time!,(value) => ++value); // 두번째게 돌때 같은 키값이 있는지 확인하고 있으면 해당하는 키값을 1 증가 시키라는 의미
+    } else {
+      cartItemsPerOrder.putIfAbsent(getCartHistoryList[i].time!, () => 1); // time 안에 들어있는 값을 키로하고 그 키값이 없으면 키 값을 1로 정한다.
+    }
+  }
+  
+  // 시간만 쏙 가져온 리스트.. 이걸로 반복할 때 조건을 만들 수 있다.
+  List<String> timeValue = cartItemsPerOrder.entries.map((e) => e.key).toList();
+
+  // 전체 수량만 쏙 가져온 리스트... 이걸로 반복할 때 조건을 만들 수 있다.
+  List<int> cartItemsPerOrderToList() {
+    return cartItemsPerOrder.entries.map((e) => e.value).toList();
+  }
+
+  List<String> cartOrderTimeToList() { // 위에거랑 똑같은데???
+    return cartItemsPerOrder.entries.map((e) => e.key).toList(); // 이렇게 하면 타임만 나오는 리스트가 만들어진다.
+  }
+
+  var listCounter = 0 // 이게 아주 중요한데. 반복문에서 전체를 돌려주기 위해서 사용한다.
+
+  void convert_getCartHistoryList_to_items() { // List<CartModel> -> Map<int, CartModel> 바꾸어야 함
+    Map map = {for (var item in getCartHistoryList) '${item.id}' : getCartHistoryList};
+    print("변경된 map의 값은 : ${map}");
+  }
+  //convert_getCartHistoryList_to_items();
+
+
+  List<String> ordertime = cartOrderTimeToList(); // 지금 리스트뷰 돌아가는 곳의 해당 타임을 가지고 온거다. 이거부터 해야 되는거 맞는데.. 대단하다.
+  //print("in cart_history. ordertime  ${ordertime[i]}");
+  // 이제 위의 이 리스트가 회전할 때 정해진 타임 ordertime[i] 를 가지고 getCartHistoryList 에서 새로운 맵을 추출한다.
+  // 클릭하는 부분이니깐 새롭게 만들어도 괜찮지..
+  Map<int, CartModel> moreOrder = {};
+  // 기억해라 GestureDector 안에 있는거로 반복문과는 조금밖에 관련없다.
+  for (int j=0; j<getCartHistoryList.length; j++) {
+    if (getCartHistoryList[j].time == ordertime[i].toString()) { // 위의 반복문의 i
+    moreOrder.putIfAbsent(getCartHistoryList[j].id!, () => getCartHistoryList[j]!); // 새로운 Map 을 만들어 값을 넣는걸 putIfAbsent 를 사용한다.
+    // CartModel.fromJson(jsonDecode(jsonEncode(getCartHistoryList[j]!))); // 아직도 왜 이렇게 해야하는지 모르겠다.
+    print("in cart_history. Product info is ${jsonEncode(getCartHistoryList[j])}");
+    }
+  }
+  Get.find<CartController>().items = moreOrder; // setter 이므로 이렇게 해야한다.
+  Get.find<CartController>().addToCartList(); // 카트에다가 추가시켜준다.
+  Get.toNamed(RouteHelper.getCartPage());
+```
+
+```dart
+List<ProductModel> popularProductList;
+var popularListIndex = Get.find<PopularProductController>()
+    .popularProductList.indexOf(cartController.getItems[index].product!); // 해당 product 의 첫번째 발견되는 인덱스를 리턴한다.
+```
+```dart
+    for (String st in cartHistory) {
+      cartListHistory.add(CartModel.fromJson(jsonDecode(st)));
+    }
+```
+```dart
+List<String> carts = [];
+List<CartModel> cartList = [];
+if (shardPreferences.containsKey(AppConstants.CART_LIST)) {
+  carts = shardPreferences.getStringList(AppConstants.CART_LIST)!;
+}
+List<CartModel> cartList = [];
+carts.forEach((element) {
+  cartList.add(CartModel.fromJson(jsonDecode(element))); // 딱 한가지를 놓쳤다. 무조건 스트링으로 되어 있는걸 jsonDecode 를 통해서 Map 으로 바꾸었고 그걸 다시 fromJson 으로 객체로 바꾸었다.
+}
+```
+```dart
+Map<int, CartModel> _items = {};
+ _items.remove(key); // 키값을 지운다.
+```
+```dart
+_items.containsKey(product.id!)); // 맵에서 키값이 있는지 확인한다.
+```
+```dart
+_items.update(product.id!, (value) {return CartModel(id:value.id, name:value.name, qty: value.qty+qty};); // 키값에 해당하는 맵의 값을 업데이트한다.
+```
+```dart
+_items.putIfAbsent(product.id!, (){})); // 키값유무로 맵함수에 키값에 따라 값을 추가할 때 주로 사용한다.
+```
+```dart
+    for (int i = 0; i < storageItems.length; i++) {
+      _items.putIfAbsent(storageItems[i].product!.id!, () => storageItems[i]);
+    }
+```
+```dart
+  List<String> ordertime = cartOrderTimeToList(); // 지금 리스트뷰 돌아가는 곳의 해당 타임을 가지고 온거다. 이거부터 해야 되는거 맞는데.. 대단하다.
+  //print("in cart_history. ordertime  ${ordertime[i]}");
+  // 이제 위의 이 리스트가 회전할 때 정해진 타임 ordertime[i] 를 가지고 getCartHistoryList 에서 새로운 맵을 추출한다.
+  // 클릭하는 부분이니깐 새롭게 만들어도 괜찮지..
+  Map<int, CartModel> moreOrder = {};
+  // 기억해라 GestureDector 안에 있는거로 반복문과는 조금밖에 관련없다.
+  for (int j=0; j<getCartHistoryList.length; j++) {
+    if (getCartHistoryList[j].time == ordertime[i].toString()) { //// 위의 반복문의 i
+      moreOrder.putIfAbsent(getCartHistoryList[j].id!, () => getCartHistoryList[j]!); // 새로운 Map 을 만들어 값을 넣는걸 putIfAbsent 를 사용한다.
+    // CartModel.fromJson(jsonDecode(jsonEncode(getCartHistoryList[j]!))); // 아직도 왜 이렇게 해야하는지 모르겠다.
+    print("in cart_history. Product info is ${jsonEncode(getCartHistoryList[j])}");
+    }
+  }
+  Get.find<CartController>().items = moreOrder; // setter 이므로 이렇게 해야한다.
+  Get.find<CartController>().addToCartList(); // 카트에다가 추가시켜준다.
+  Get.toNamed(RouteHelper.getCartPage());
+```
+```dart
+_items.forEach((key,value) {
+  if (key==product.id! {
+    qty = value.qty } 
+);}); // 전체 맵의 값을 가지고 한번 돌면서 임시값 qty 에 . for 문과 유사. if 와 사용
+```
+```dart
+_items.forEach((key, value) {totalQty += value.quantity!;}); // 전체맵을 돌면서 qty 값을 임시변수 totalQty 에 더한다.
+```
+```dart
+List<CartModel>인 cartModelItems.forEach((element) { temporaryTotal += element.quantity!.toDouble() * element.price!.toDouble();});
+```
+```dart
+List<CartModel> getItems = _items.entries.map((e) {return e.value}).toList(); // 맵의 각 e 값으로 lazy 하게 돌려서 List 를 만든다.
+```
+```dart
+      _popularProductList.addAll(Product.fromJson(response.body).products); // json 을 Model 로 변환해서 넣어주었슴. 잘봐라 프로덕트만 가져온다.
+
+```
+```dart
+    // 시간 형식을 바꾸기 위해서 사용
+    String changeTimeFormat(String time) {
+      print("/////////////// ${time}");
+      var str = time; //"the quick brown fox jumps over the lazy dog";
+      const start = "20";
+      const end = ".";
+
+      final startIndex = time.indexOf(start);
+      final endIndex = time.indexOf(end, startIndex + start.length);
+      //print("endindex 의 값은 ${endIndex.toString()}");
+      return time.toString().substring(0, endIndex - 3);
+    }
+```
+
+```dart
+  // immediately invoke function, 위젯안에서 실행할 수 있네.. Grammar 너무 중요한거다.
+  // https://medium.com/dartlang/3-cool-dart-patterns-6d8d9d3d8fb8(() {
+  var original = DateFormat("yyyy-MM-dd HH:mm:ss").parse(timeValue[i]); // 텍스트를 정해진 형식대로 DateTime 으로변경
+  var inputDate = DateTime.parse(original.toString());
+  var outputFormat = DateFormat("MM/dd/yyyy hh:mm a"); // 아웃풋 포맷은 이것으로 하기로 하고
+  var outputDate = outputFormat.format(inputDate); // 그 아웃풋 형식에 맞게 다른 DateTime 형식을 넣어준다. 그러면 문자열 리턴
+  return BigText(text: outputDate); // 그러면 그거 사용
+  /*return BigText( // 이건 내가 작업한 거고..
+    text: changeTimeFormat();
+  */
+}()),
+```
+```dart
+// erging widgets into a collection: for ()...[]
+children: [
+  // Merging Widget into a collection. 모든 갈증이 해결되는 느낌이네... 이렇게 반복문으로 더 많은 내용을 넣을 수 있다.
+  for (int i = 0; i < itemsPerOrder.length; i++)...[ // 3. 2. 3 여기서는 3번만 반복된다는걸 반드시 기억하자.
+    Container(), // 잘봐라. 여기에는 return 하지 는다. 그냥 계속 추가해 나간다는 의미이므로
+  ],
+```
+```dart
+children: // 이자체가 리스트이므로 [] 할필요가 없지
+  List.generate(itemsPerOrder[i], (index) {
+
+```
+
+
+> PageView 가 화면이 에니메이션처럼 작아졌다 커졌다 하는 기능
+```dart
+import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/popular_product_controller.dart';
+import 'package:food_delivery/model/products_model.dart';
+import 'package:food_delivery/pages/food/popular_food_detail.dart';
+import 'package:food_delivery/pages/home/main_food_page.dart';
+import 'package:food_delivery/routes/route_helper.dart';
+import 'package:food_delivery/utils/app_constants.dart';
+import 'package:food_delivery/utils/colors.dart';
+import 'package:food_delivery/utils/dimensions.dart';
+import 'package:food_delivery/widget/App_Column.dart';
+import 'package:food_delivery/widget/big_text.dart';
+import 'package:food_delivery/widget/icon_and_text.dart';
+import 'package:food_delivery/widget/small_text.dart';
+import 'package:get/get.dart';
+import 'package:transparent_image/transparent_image.dart';
+
+/*
+/// 페이지뷰를 이렇게 독립적으로 만들어서 나중에 끼워 넣는 방식으로 사용한다.
+/// 아주 좋은 방법인것 같다.
+ */
+typedef double2VoidFunc = void Function(); // 이렇게 콜백함수의 형정의를 해주고..
+
+class FoodPageBody extends StatefulWidget {
+  final double2VoidFunc callbackForCurrPageValue;
+  final PagesValuesToShare pagesValuesToShare; // 이것도 외부에서 이미 만들어진 객체의 포인터를 가지고 온것.. 여기서 바꾸면 외부도 바뀐다.
+
+  const FoodPageBody(
+      {Key? key,
+      required this.pagesValuesToShare,
+      required this.callbackForCurrPageValue})
+      : super(key: key);
+
+  @override
+  State<FoodPageBody> createState() => _FoodPageBodyState();
+}
+
+class _FoodPageBodyState extends State<FoodPageBody> {
+  PageController pageController = PageController(viewportFraction: 0.85);
+  final double _scaleFactor = 0.8;
+  final double _height = Dimensions.pageViewContainer;
+
+  @override
+  void initState() {
+    super.initState();
+    // 내가 PageController 가 움직일때 값을 받아오기 위해서 Listener 를 연결해주어야 한다.
+    pageController.addListener(() { // 움직일때마다 setState 가 작동되게 했네.. // 나중에 반드시 dispose() 를 해주어라.
+      setState(() {
+        widget.pagesValuesToShare.currPageValue =
+            pageController.page!; // 숫자가 0.0 - 1.0 까지 값이 변경되고 있네. page 값으로.. !!!
+        widget.callbackForCurrPageValue(); // 그래서 아주 조금씩 움직이는데도 인디케이터도 조금씩 따라서 움직이는거다.
+        print(
+            'Current value is ${widget.pagesValuesToShare.currPageValue.toString()}');
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<PopularProductController>(
+      builder: (popularProductController) {
+        // update() 로 변경이 일어날때 마다 GetBuilder 가 실행되고 동시에 변경이 일어난 컨트롤러를 사용할 수 있게 된다.
+        // dot indicator 에 값을 넣어주는 부분, class 객체로 데이터를 공유하고 있다.
+        widget.pagesValuesToShare.pagesTotalValue =
+            popularProductController.popularProductList.length;
+        return Container(
+          height: Dimensions.pageView,
+          child: PageView.builder(
+              controller: pageController,
+              itemCount: popularProductController.popularProductList.length,
+              itemBuilder: (context, position) {
+                return _PageViewBuilderItem(
+                    position, popularProductController.popularProductList[position]);
+              }),
+        );
+      },
+    );
+  }
+
+  Widget _PageViewBuilderItem(int position, ProductModel popularProduct) {
+    Matrix4 matrix4 = Matrix4.identity();
+    if (position == widget.pagesValuesToShare.currPageValue.floor()) {
+      var currScale = 1 -
+          (widget.pagesValuesToShare.currPageValue - position) *
+              (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else if (position ==
+        widget.pagesValuesToShare.currPageValue.floor() + 1) {
+      var currScale = _scaleFactor +
+          (widget.pagesValuesToShare.currPageValue - position + 1) *
+              (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1);
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else if (position ==
+        widget.pagesValuesToShare.currPageValue.floor() - 1) {
+      var currScale = 1 -
+          (widget.pagesValuesToShare.currPageValue - position) *
+              (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else {
+      // 3번째 것
+      var currScale = 0.8;
+      matrix4 = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, _height * (1 - _scaleFactor) / 2, 1);
+    }
+    return Transform( // 이렇게 감싸주면 바뀌는구나.
+      transform: matrix4,
+      child: GestureDetector(
+        onTap: () {
+          print('popular food 로 전달된 pageId 값은 $position 입니다.');
+          Get.toNamed(
+            RouteHelper.getPopularFood(position, RouteHelper.initial),
+          ); // 디테일 페이지로 이동
+        },
+        child: Stack(
+          children: [
+            _mainBody(position, popularProduct),
+            _subBody(popularProduct),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _subBody(ProductModel popularProduct) {
+    // 옆에 패딩을 넣어주기 위해서 Container 를 또 넣어주기로 했지..
+    return Align(
+      alignment: Alignment.bottomCenter, // 이부분때문에 밑으로 내려가는거다.
+      child: Container(
+        height: Dimensions.pageViewTextContainer,
+        margin: EdgeInsets.only(
+            left: Dimensions.edgeInsets30,
+            right: Dimensions.edgeInsets30,
+            bottom: Dimensions.edgeInsets30),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Dimensions.radius30),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFFe8e8e8),
+                blurRadius: 5.0,
+                offset: Offset(0, 5),
+              ),
+              BoxShadow(
+                color: Colors.white,
+                offset: Offset(-5, 0),
+              ),
+              BoxShadow(
+                color: Colors.white,
+                offset: Offset(5, 0),
+              ),
+            ]),
+        child: AppColumn(title: popularProduct.name!),
+      ),
+    );
+  }
+
+  Widget _mainBody(int position, ProductModel popularProduct) {
+    return Container(
+      height: _height,
+      margin: EdgeInsets.only(
+          left: Dimensions.edgeInsets10, right: Dimensions.edgeInsets10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimensions.radius30),
+        //color: position.isEven ? Colors.green : Colors.pink,
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: FadeInImage.memoryNetwork( // 이것도 해보려고 했는데 잘 안되더라..
+            placeholder: kTransparentImage,
+            //const AssetImage('assets/images/loading.png'),
+            image:
+                '${AppConstants.BASE_URL}${AppConstants.UPLOAD_URL}${popularProduct.img}',
+          ).image,
+        ),
+      ),
+    );
+  }
+}
+
+/*
+Widget _mainBody(int position, ProductModel popularProduct) {
+  return Container(
+      height: _height,
+      margin: EdgeInsets.only(
+          left: Dimensions.edgeInsets10, right: Dimensions.edgeInsets10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimensions.radius30),
+        //color: position.isEven ? Colors.green : Colors.pink,
+        image: DecorationImage(
+            image:NetworkImage(
+                AppConstants.BASE_URL + '/uploads/' + popularProduct.img.toString()),
+            fit: BoxFit.cover),
+      ));
+}
+*/
+
+```
+
 //////////////////////////////////////////////////////////////////////////////////
 
 # GetX 란?

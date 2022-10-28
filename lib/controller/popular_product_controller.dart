@@ -28,7 +28,7 @@ class PopularProductController extends GetxController {
   int get quantity => _quantity;
 
   int _inCartItems = 0; // 카트 안에 몇개의 아이템이 있는지 체크
-  int get inCartItems => _inCartItems + _quantity;
+  int get inCartItems => _inCartItems + _quantity; // 두개를 합친이유???
 
   Future<void> getPopularProductList() async {
     Response response = await popularProductRepo.getPopularProductList();
@@ -41,8 +41,7 @@ class PopularProductController extends GetxController {
       // 인터넷에서 받은 json 데이터를 Map 과의 연관성은 어떻게 되냐는거지?????
 
       //
-      _popularProductList.addAll(Product.fromJson(response.body)
-          .products); // json 을 Model 로 변환해서 넣어주었슴.
+      _popularProductList.addAll(Product.fromJson(response.body).products); // json 을 Model 로 변환해서 넣어주었슴. 잘봐라 프로덕트만 가져온다.
       print("$_popularProductList in popular Controller");
       _isLoaded = true;
       update(); // setState 를 실행시킨다.

@@ -50,7 +50,13 @@ class CartController extends GetxController {
 
   Map<int, CartModel> get items => _items;
 
-  List<CartModel> storageItems = [];
+  set items(Map<int, CartModel> value) { // 히스토리에서 _items 로 값을 넣어주는 함수
+    _items = {}; // 초기화를 해준다.. 그럼 기존에 오더 하고 있던 내용은 다 지워지는데..
+    _items = value;
+  }
+
+
+  List<CartModel> storageItems = []; // Items in Cart. Cart Items.
 
   // 맵에 넣는 함수
   // addItem 함수를 이용해서 UI 에서 추가 버턴을 클릭하면 다시 Controller 가 추가를 하라는 명령을 CartRepo 에 내려준다.
@@ -135,12 +141,11 @@ class CartController extends GetxController {
     return quantity;
   }
 
-  // 전체적인 총 갯수를 구하는 건가? 왜?
+  // 전체적인 총 갯수를 구하는 함수. 전체 선택한 아이템의 총 갯수를 구한다.
   int get totalItems {
     var totalQuantity = 0;
     _items.forEach((key, value) {
-      totalQuantity += value
-          .quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
+      totalQuantity += value.quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
     });
 
     return totalQuantity;
@@ -157,7 +162,7 @@ class CartController extends GetxController {
   double get totalAmount {
     double total = 0;
     // 내가 직접한다. 현재 가지고 있는 모든 가용자원을 다 사용한다.
-    List<CartModel> cartModelItems = getItems;
+    List<CartModel> cartModelItems = getItems; // 일단 리스트로 바꾸어서
     cartModelItems.forEach((element) {
       total += element.quantity!.toDouble() * element.price!.toDouble();
     });
@@ -199,4 +204,11 @@ class CartController extends GetxController {
   List<CartModel> getCartHistoryList() {
     return cartRepo.getCartHistoryList();
   }
+
+
+  void addToCartList() { //카트에 _items 의 값을 추가해주는 함수
+    cartRepo.addToCartList(getItems);
+    update();
+  }
+
 }
