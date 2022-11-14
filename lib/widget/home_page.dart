@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/pages/account/account_page.dart';
 import 'package:food_delivery/pages/cart/cart_history.dart';
 import 'package:food_delivery/pages/home/main_food_page.dart';
 import 'package:food_delivery/utils/colors.dart';
@@ -22,10 +23,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           child: CartHistory(),
         )),
-    Center(
-        child: Container(
-          child: Text('page3'),
-        )),
+    const AccountPage(),
   ];
 
   void onTapNav(int pageNo) {

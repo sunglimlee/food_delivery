@@ -6,6 +6,7 @@ class AppConstants {
       "http://mvs.bslmeiyu.com"; // mvs.bslmeiyu.com , 127.0.0.1:8000,  http://10.0.2.2:8000
   static const String POPULAR_PRODUCT_URI = "/api/v1/products/popular";
   static const String RECOMMENDED_PRODUCT_URI = "/api/v1/products/recommended";
+  static const String DRINKS_URI = "/api/v1/products/drinks"; // 드링크 관련 서버 api
   static const String UPLOAD_URL = "/uploads/";
 
   static const String TOKEN = "DBtoken";

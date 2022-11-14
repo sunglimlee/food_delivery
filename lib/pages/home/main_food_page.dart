@@ -29,61 +29,67 @@ class _MainFoodPageState extends State<MainFoodPage> {
   // Expanded 와 SingChildScrollView 는 한번에 묶어져 있어야 한다.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(
-                  top: Dimensions.height15, bottom: Dimensions.height15),
-              // showing the header
-              child: FoodPageHeaderBar(),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // showing the body
-                    Column(
-                      children: [
-                        // Slider Section
-                        FoodPageBody( // 결국 변경하고자하는 값과 setState 를 품은 update 함수를 같이 넘겨 주어야 안쪽에서 변경되는걸 여기 외부에서 바꿀 수 있네.
-                          pagesValuesToShare: pagesValuesToShare,
-                          callbackForCurrPageValue: update,
-                        ),
-                        GetBuilder<PopularProductController>(
-                            builder: (popularProducts) {
-                          return dotIndicator(pagesValuesToShare.currPageValue,
-                              popularProducts);
-                        }), //
-                        SizedBox(
-                          height: Dimensions.height30,
-                        ),
-                        _popularTextArea(),
-                        SizedBox(
-                          height: Dimensions.height30,
-                        ),
-                        GetBuilder<RecommendedProductController>(
-                          builder: (recommendedProducts) {
-                            // Recommended product 리스트를 보여준다.
-                            return (recommendedProducts.isLoaded == true)
-                                ? _recommendedListView(recommendedProducts)
-                                : const CircularProgressIndicator(); // 나오긴 했는데 약해. 내가 원한게 아니야..
-                          },
-                        ),
-                        SizedBox(
-                          height: Dimensions.height30,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+    // 기존에는 Scaffold 를 이용해서 작업을 했었는데 그걸 없애고 RefreshIndicator 를 사용해 주었다.
+    // 특이한 점은 새로운 데이터를 불러들이는 함수를 만들어주고 Future<void>를 이용해서 데이터를 받아들이고 나면 비로소 onRefresh 를 실행하게 된다.
+    return RefreshIndicator(onRefresh: _loadResources, child: SafeArea(
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(
+                top: Dimensions.height15, bottom: Dimensions.height15),
+            // showing the header
+            child: FoodPageHeaderBar(),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // showing the body
+                  Column(
+                    children: [
+                      // Slider Section
+                      FoodPageBody( // 결국 변경하고자하는 값과 setState 를 품은 update 함수를 같이 넘겨 주어야 안쪽에서 변경되는걸 여기 외부에서 바꿀 수 있네.
+                        pagesValuesToShare: pagesValuesToShare,
+                        callbackForCurrPageValue: update,
+                      ),
+                      GetBuilder<PopularProductController>(
+                          builder: (popularProducts) {
+                            return dotIndicator(pagesValuesToShare.currPageValue,
+                                popularProducts);
+                          }), //
+                      SizedBox(
+                        height: Dimensions.height30,
+                      ),
+                      _popularTextArea(),
+                      SizedBox(
+                        height: Dimensions.height30,
+                      ),
+                      GetBuilder<RecommendedProductController>(
+                        builder: (recommendedProducts) {
+                          // Recommended product 리스트를 보여준다.
+                          return (recommendedProducts.isLoaded == true)
+                              ? _recommendedListView(recommendedProducts)
+                              : const CircularProgressIndicator(); // 나오긴 했는데 약해. 내가 원한게 아니야..
+                        },
+                      ),
+                      SizedBox(
+                        height: Dimensions.height30,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ));
+  }
+
+  Future<void> _loadResources() async {
+    // 인터넷에서 데이터를 불러들이는 부분이다. 리스트에서 데이터가 없어진게 아니므로 여기 계속 살아있지.. 그런데 스플래쉬 스크린이 없어지면 이것도 없어지지 않나? permanent 로 해줘야 할 것 같은데..
+     Get.find<PopularProductController>().getPopularProductList();
+     Get.find<RecommendedProductController>().getRecommendedProductList();
   }
 
   void update() {

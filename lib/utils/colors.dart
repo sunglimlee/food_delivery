@@ -15,4 +15,7 @@ class AppColors {
 
   // static final Color yellowColor = const Color(0xFFfa7552);
   static const Color yellowColor = Color(0xFFffd379);
+
+
+
 }
