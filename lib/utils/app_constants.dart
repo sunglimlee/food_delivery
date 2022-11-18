@@ -9,6 +9,9 @@ class AppConstants {
   static const String DRINKS_URI = "/api/v1/products/drinks"; // 드링크 관련 서버 api
   static const String UPLOAD_URL = "/uploads/";
 
+  //SignUP endpoint URI
+  static const String REGSTRATION_URI = "/api/v1/auth/register"; // 디렉토리를 잘 기억해두자.. Larabel 에 등록해주어야 한다.
+
   static const String TOKEN = "DBtoken";
 
   static const String CART_LIST = "cart-list";

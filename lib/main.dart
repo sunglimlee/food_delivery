@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
-import 'package:food_delivery/model/test_model.dart';
-import 'package:food_delivery/pages/food/popular_food_detail.dart';
-import 'package:food_delivery/pages/food/recommended_food_detail.dart';
-import 'package:food_delivery/pages/home/main_food_page.dart';
-import 'package:food_delivery/pages/splash/splash_page.dart';
+import 'package:food_delivery/pages/auth/sign_up_page.dart';
 import 'package:food_delivery/routes/route_helper.dart';
-import 'package:food_delivery/widget/home_page.dart';
 import 'package:get/get.dart';
+
 import 'helper/dependencies.dart' as dep;
+import 'pages/auth/sign_in_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // 꼭 바인딩이 완료되었는지 확인한후 진해한다.
@@ -33,9 +30,10 @@ class MyApp extends StatelessWidget {
     Get.find<PopularProductController>()
         .getPopularProductList(); // 왜 find 했는데 먹히냐고? 알다시피 dep 에다가 모든걸 만들어 놓고 lazyput 으로 해놓았기 때문이지..
     Get.find<RecommendedProductController>().getRecommendedProductList();
-    // SharedPreperences 의 값을 불러들이기 위해서 CartController 를 사용한다.
+    // SharedPreferences 의 값을 불러들이기 위해서 CartController 를 사용한다.
     return GetMaterialApp(
-      initialRoute: RouteHelper.getSplashPage(),
+      //initialRoute: RouteHelper.getSplashPage(), // 원래 이거다.
+
       // 이곳이 홈페이지
       getPages: RouteHelper.routes,
       debugShowCheckedModeBanner: false,
@@ -46,6 +44,7 @@ class MyApp extends StatelessWidget {
       //home: const SplashScreen(),
       //home: const RecommendedFoodDetail(),
       //home: TestModel(),
+      home: SignInPage(),
     );
   }
 }
