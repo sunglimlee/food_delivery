@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
     Get.find<RecommendedProductController>().getRecommendedProductList();
     // SharedPreferences 의 값을 불러들이기 위해서 CartController 를 사용한다.
     return GetMaterialApp(
-      //initialRoute: RouteHelper.getSplashPage(), // 원래 이거다.
+      initialRoute: RouteHelper.getSplashPage(), // 원래 이거다.
 
-      // 이곳이 홈페이지
+      // 이곳이 홈페이지, getPages 때문에 home: 을 넣어줄 필요가 없다. 스플래쉬 스크린에서 2초후 다음으로 넘어간다.
       getPages: RouteHelper.routes,
       debugShowCheckedModeBanner: false,
       title: 'Food Delivery App',
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
       //home: const SplashScreen(),
       //home: const RecommendedFoodDetail(),
       //home: TestModel(),
-      home: SignInPage(),
+      //home: SignInPage(),
     );
   }
 }

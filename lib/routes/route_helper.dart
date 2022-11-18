@@ -1,3 +1,4 @@
+import 'package:food_delivery/pages/auth/sign_in_page.dart';
 import 'package:food_delivery/pages/cart/cart_page.dart';
 import 'package:food_delivery/pages/food/popular_food_detail.dart';
 import 'package:food_delivery/pages/food/recommended_food_detail.dart';
@@ -6,11 +7,13 @@ import 'package:food_delivery/widget/home_page.dart';
 import 'package:get/get.dart';
 
 class RouteHelper {
+  // 그냥 이름을 정의한 것일 뿐이다. 마치 디렉토리를 정해놓은 것 처럼.. 이렇게 했기 때문에 html 의 파라미터를 넣는것처럼 하는게 가능하다.
   static const String splashPage = "/splash-page";
   static const String initial = "/"; // 이곳이 홈페이지이다.
   static const String popularFood = "/popular-food";
   static const String recommendedFood = "/recommended-food";
   static const String cartPage = "/cart-page";
+  static const String signIn = "/sign-in";
 
   static String getSplashPage() => '$splashPage';
 
@@ -22,6 +25,7 @@ class RouteHelper {
       '$recommendedFood?pageId=$pageId&whichPage=$whichPage';
 
   static String getCartPage() => '$cartPage';
+  static String get getSignInPage => '$signIn'; // getCartPage() 와 똑같다. 그냥 get 을 이용해서 불러들이는거다.
 
   static List<GetPage> routes = [
     GetPage(name: splashPage, page: () => const SplashScreen()),
@@ -52,5 +56,6 @@ class RouteHelper {
         name: cartPage,
         page: () => const CartPage(),
         transition: Transition.fadeIn),
+    GetPage(name: signIn, page: () => SignInPage(), transition: Transition.fadeIn),
   ];
 }

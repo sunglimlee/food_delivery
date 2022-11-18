@@ -11,8 +11,12 @@ class AppConstants {
 
   //SignUP endpoint URI
   static const String REGSTRATION_URI = "/api/v1/auth/register"; // 디렉토리를 잘 기억해두자.. Larabel 에 등록해주어야 한다.
+  static const String LOGIN_URI = "/api/v1/auth/login"; // 디렉토리를 잘 기억해두자.. Larabel 에 등록해주어야 한다.
 
-  static const String TOKEN = "DBtoken";
+  static const String TOKEN = ""; // 이제는 빈채로 있어야 되는거지..
+  static const String PHONE = "";
+  static const String PASSWORD = "";
+
 
   static const String CART_LIST = "cart-list";
   static const String CART_HISTORY_LIST = "cart-history-list";

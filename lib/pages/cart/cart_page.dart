@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/base/no_data_page.dart';
+import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
@@ -133,11 +134,16 @@ class CartPage extends StatelessWidget {
               ),
             ),
             GestureDetector( // 체크아웃 버턴 부분
-
             onTap: () {
-                // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
-                print("in car_page. Tapped????");
-                cartController.addToHistory();
+                // Login 이 되어 있는지 확인하는 부분
+                if (Get.find<AuthController>().userLoggedIn()) {
+                  // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
+                  print("in car_page. Tapped????");
+                  cartController.addToHistory();
+                } else {
+                  // 이 부분을 내가 일부러 getter 를 사용했다. getter 사용하니깐 괄호를 넣을 필요가 없네..
+                  Get.toNamed(RouteHelper.getSignInPage);
+                }
               },
               child: Container(
                 padding: EdgeInsets.only(
