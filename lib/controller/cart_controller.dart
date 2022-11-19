@@ -211,4 +211,16 @@ class CartController extends GetxController {
     update();
   }
 
+  void removeCart() {
+    cartRepo.removeCart();
+  }
+  // Cart History 를 전부 지운다.
+  void removeCartHistory() {
+    cartRepo.removeCartHistory();
+  }
+  void updateCart() {
+    update();
+  }
+
+
 }

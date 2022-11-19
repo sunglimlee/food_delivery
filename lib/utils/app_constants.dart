@@ -9,9 +9,12 @@ class AppConstants {
   static const String DRINKS_URI = "/api/v1/products/drinks"; // 드링크 관련 서버 api
   static const String UPLOAD_URL = "/uploads/";
 
-  //SignUP endpoint URI
+  //SignUp endpoint URI
   static const String REGSTRATION_URI = "/api/v1/auth/register"; // 디렉토리를 잘 기억해두자.. Larabel 에 등록해주어야 한다.
   static const String LOGIN_URI = "/api/v1/auth/login"; // 디렉토리를 잘 기억해두자.. Larabel 에 등록해주어야 한다.
+
+  // userProfile 내용을 받아오기 위한 UII 정의부분
+  static const String USER_INFO_URI = "/api/v1/customer/info";
 
   static const String TOKEN = ""; // 이제는 빈채로 있어야 되는거지..
   static const String PHONE = "";

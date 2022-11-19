@@ -95,4 +95,10 @@ class CartRepo extends GetxController {
     //print("in Cart_repo. cartListHistory is ${cartListHistory.toString()}");
     return cartListHistory;
   }
+
+  // Cart History 를 전부 지운다.
+  void removeCartHistory() {
+    cartHistory.clear();
+    shardPreferences.remove(AppConstants.CART_HISTORY_LIST);
+  }
 }

@@ -4,6 +4,7 @@ import 'package:food_delivery/base/custom_loader.dart';
 import 'package:food_delivery/base/show_custom_snackbar.dart';
 import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/model/signup_body_model.dart';
+import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/app_text_field.dart';
@@ -198,6 +199,8 @@ class SignUpPage extends StatelessWidget {
         print("LSL:in sign_up_page.dart");
         if (responseModel.isSuccess) {
           print("Success registration");
+          // 여기 안되어 있네... 정말 머리좋다. 왜 나는 알고 있는데 이런걸 생각못하는 걸까???
+          Get.offNamed(RouteHelper.getInitial());
         } else { // 실패했으면
           showCustomSnackBar(responseModel.message.toString());
         }

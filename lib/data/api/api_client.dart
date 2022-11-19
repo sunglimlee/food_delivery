@@ -1,5 +1,6 @@
 import 'package:food_delivery/utils/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // 이 클래스에서 Map 에 값을 넣는 방법 두가지를 잘보도록 하자.
 class ApiClient extends GetConnect implements GetxService {
@@ -8,24 +9,28 @@ class ApiClient extends GetConnect implements GetxService {
   late Map<String, String>
       _mainHeaders; // HTTP 서버에 필요한 Header 를 저장해서 보내기 위해서 필요하다.
   final String _appBaseUrl;
+  late SharedPreferences sharedPreferences;
 
-  ApiClient({required var appBaseUrl}) : _appBaseUrl = appBaseUrl {
+  ApiClient({required var appBaseUrl, required this.sharedPreferences}) : _appBaseUrl = appBaseUrl {
     baseUrl = _appBaseUrl; // GetConnect 객체에 있는 baseUrl 에 값을 넣어준다.
     timeout =
         const Duration(seconds: 30); // GetConnect 객체에 있고, 통신을 최대한 유지하는 시간을 30초로 설정한다.
-    token = AppConstants.TOKEN;
+    // 내가 생각한대로 ! 를 넣지 않고 "" 를 넣었다. 그래야지.. 비어있는지 어떻게 알고 무조건 ! 를 하니?
+    token  = sharedPreferences.getString(AppConstants.TOKEN) ?? "";
     _mainHeaders = {
       'Content-type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
     };
   }
 
+  // 뭐 getData 로 모든 데이터 다 불러오네.. 가능하게도 URI 만 있으면 서버에서 URI 를 보고 데이터를 취합해서 Response 해주는거네.. 너무 멋진데...
+  // 그래서 headers 를 보내면 token 도 같이 보내게 되니깐 자동으로 거기 토큰에 맞는 데이터를 찾아서 보내주게 된다.
   Future<Response> getData(
-    String uri,
+    String uri, {Map<String, String>? headers}
   ) async {
     try {
       Response response = await get(
-          uri); // GetConnect 에서 사용되어지는 함수, uri 가 데이터 리스트를 받아오는 서버의 주소겠지
+          uri, headers: headers ?? _mainHeaders); // GetConnect 에서 사용되어지는 함수, uri 가 데이터 리스트를 받아오는 서버의 주소겠지
       print("baseUrl 은 $baseUrl 입니다.");
       print("uri 의 값은 $uri 입니다.");
       print(" api_client 에서 돌아오는 값은 ${response.body} 입니다.");

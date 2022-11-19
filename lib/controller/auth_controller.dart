@@ -76,6 +76,10 @@ class AuthController extends GetxController implements GetxService {
   bool userLoggedIn() {
     return authRepo.userLoggedIn();
   }
+  // Profile Page 에서 Logout 할 때
+  bool clearSharedData() {
+    return authRepo.clearSharedData();
+  }
 
 
 }
