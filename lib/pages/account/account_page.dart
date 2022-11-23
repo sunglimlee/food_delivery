@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery/base/custom_loader.dart';
 import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
+import 'package:food_delivery/controller/location_controller.dart';
 import 'package:food_delivery/controller/user_controller.dart';
 import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/colors.dart';
@@ -100,17 +101,43 @@ class AccountPage extends StatelessWidget {
                             height: Dimensions.height30,
                           ),
                           // address
-                          AccountWidget(
-                              appIcon: AppIcon(
-                                icon: Icons.location_on,
-                                backgroundColor: AppColors.mainColor,
-                                iconColor: Colors.white,
-                                iconSize: Dimensions.height10 * 5 / 2,
-                                size: Dimensions.height10 * 5,
-                              ),
-                              bigText: BigText(
-                                text: "36 Mayland Trail, Stoney Creek, L8J0G4",
-                              )),
+                          GetBuilder<LocationController>(builder: (locationController) {
+                            if (userLoggedIn && locationController.addressList.isEmpty) {
+                              return GestureDetector(
+                                onTap: (){
+                                  Get.offNamed(RouteHelper.getAddAddressPage());
+                                },
+                                child: AccountWidget(
+                                    appIcon: AppIcon(
+                                      icon: Icons.location_on,
+                                      backgroundColor: AppColors.mainColor,
+                                      iconColor: Colors.white,
+                                      iconSize: Dimensions.height10 * 5 / 2,
+                                      size: Dimensions.height10 * 5,
+                                    ),
+                                    bigText: BigText(
+                                      text: "36 Mayland Trail, Stoney Creek, L8J0G4",
+                                    )),
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: (){
+                                  Get.offNamed(RouteHelper.getAddAddressPage());
+                                },
+                                child: AccountWidget(
+                                    appIcon: AppIcon(
+                                      icon: Icons.location_on,
+                                      backgroundColor: AppColors.mainColor,
+                                      iconColor: Colors.white,
+                                      iconSize: Dimensions.height10 * 5 / 2,
+                                      size: Dimensions.height10 * 5,
+                                    ),
+                                    bigText: BigText(
+                                      text: "Your Address",
+                                    )),
+                              );
+                            }
+                          }),
                           SizedBox(
                             height: Dimensions.height30,
                           ),
@@ -137,6 +164,7 @@ class AccountPage extends StatelessWidget {
                                 Get.find<AuthController>().clearSharedData();
                                 Get.find<CartController>().removeCart();
                                 Get.find<CartController>().removeCartHistory();
+                                Get.find<LocationController>().clearAddressList(); // 주소리스트를 전부 지워준다.
                                 Get.find<CartController>().updateCart();
                                 Get.toNamed(RouteHelper.getSignInPage);
                               } else {

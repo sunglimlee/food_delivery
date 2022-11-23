@@ -1,3 +1,4 @@
+import 'package:food_delivery/pages/address/add_address_page.dart';
 import 'package:food_delivery/pages/auth/sign_in_page.dart';
 import 'package:food_delivery/pages/cart/cart_page.dart';
 import 'package:food_delivery/pages/food/popular_food_detail.dart';
@@ -15,6 +16,8 @@ class RouteHelper {
   static const String cartPage = "/cart-page";
   static const String signIn = "/sign-in";
 
+  static const String addAddress = "/add-address";
+
   static String getSplashPage() => '$splashPage';
 
   static String getInitial() => '$initial';
@@ -27,9 +30,11 @@ class RouteHelper {
   static String getCartPage() => '$cartPage';
   static String get getSignInPage => '$signIn'; // getCartPage() 와 똑같다. 그냥 get 을 이용해서 불러들이는거다.
 
+  static String getAddAddressPage() => '$addAddress';
+
   static List<GetPage> routes = [
     GetPage(name: splashPage, page: () => const SplashScreen()),
-    GetPage(name: initial, page: () => const HomePage()),
+    GetPage(name: initial, page: () => const HomePage(), transition: Transition.fadeIn),
     GetPage(
       name: popularFood,
       // 맞네.. popularFood 로 들어오면 무조건 페이지 아이디 있다는거지. 함수로 전달하니깐.
@@ -57,5 +62,6 @@ class RouteHelper {
         page: () => const CartPage(),
         transition: Transition.fadeIn),
     GetPage(name: signIn, page: () => SignInPage(), transition: Transition.fadeIn),
+    GetPage(name: addAddress, page: () => AddAddressPage(), transition: Transition.fadeIn),
   ];
 }

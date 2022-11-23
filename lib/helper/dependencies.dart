@@ -1,11 +1,13 @@
 import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
+import 'package:food_delivery/controller/location_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/controller/user_controller.dart';
 import 'package:food_delivery/data/api/api_client.dart';
 import 'package:food_delivery/data/repository/auth_repo.dart';
 import 'package:food_delivery/data/repository/cart_repo.dart';
+import 'package:food_delivery/data/repository/location_repo.dart';
 import 'package:food_delivery/data/repository/popular_product_repo.dart';
 import 'package:food_delivery/data/repository/recommended_product_repo.dart';
 import 'package:food_delivery/data/repository/user_repo.dart';
@@ -35,6 +37,8 @@ Future<void> init() async {
   Get.lazyPut(() => AuthRepo(Get.find<ApiClient>(), Get.find<SharedPreferences>()));
   // UserProfile 데이터를 업데이트 하기 위한 Dependency injection 부분
   Get.lazyPut(() => UserRepo(apiClient: Get.find<ApiClient>()));
+  // Google Map 을 위한 Repository Dependency Injection 부분
+  Get.lazyPut(() => LocationRepo(apiClient: Get.find<ApiClient>(), sharedPreferences: Get.find<SharedPreferences>()));
 
   // controller 제일 중요한거잖아. 그리고 이 dependencies 를 main.dart 에서 사용하니깐 이페이지가 다른 페이지를 다 품고 있으니깐 굳이 이걸 permanent 로 해줄 필요가 없는거지..
   // 이부분이 헷갈리면 main.dart 의 Get.find 부분을 봐라. 명확히 이해가 된다. Splash Screen 이 없어지면 그 안에 적용했던 dependency 도 없어지니 화면에는 보였지만 detail 페이지로 넘어갈 때는 dependency 를 찾을 수 가 없게 되는 거지..
@@ -50,7 +54,8 @@ Future<void> init() async {
   Get.lazyPut(() => CartController(cartRepo: Get.find<CartRepo>()));
   // Signup 하기 위한 AuthController Dependency injection 부분
   Get.lazyPut(() => AuthController(Get.find<AuthRepo>()));
-  // UserProfile 데이터를 업데이트 하기 위한 Controler 부분
+  // UserProfile 데이터를 업데이트 하기 위한 Controller 부분
   Get.lazyPut(() => UserController(Get.find<UserRepo>()));
-
+  // Google Map 을 위한 Controller Dependency Injection 부분
+  Get.lazyPut(() => LocationController(locationRepo: Get.find<LocationRepo>()));
 }

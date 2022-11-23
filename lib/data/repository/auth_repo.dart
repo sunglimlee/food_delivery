@@ -32,7 +32,7 @@ class AuthRepo {
 
   // 쇼핑하고 결재할 때 이미 login 이 되었는지 확인하는 함수, Token 을 사용하는 거지..
   bool userLoggedIn() {
-    // 아주 간단한데 강력하네.. containsKey yes/no
+    // 아주 간단한데 강력하네.. containsKey yes/no, 로컬에 토큰이 있고 없고로 로그인 유무를 판단하고
     return sharedPreferences.containsKey(AppConstants.TOKEN);
   }
 
@@ -43,9 +43,9 @@ class AuthRepo {
   }
   // signIn 을 하기 위해 AuthController 에 대응하는 함수 login
   // Larabel 은 이메일과 패스워드를 이용해서 Token 이 존재하는지 비교하고 토큰이 존재하면 statusCode 200 을 리턴하고 토큰도 리턴한다. 그럼 내가 그 토큰을 저장하면 된다.
-  Future<Response> login(String email, String password) async {
+  Future<Response> login(String phone, String password) async {
     Map<String, String> loginValue = {
-      "email" : email,
+      "phone" : phone,
       "password" : password
     }; // 대괄호밖에 세미콜론 있는 이유는 지금 맵을 초기화 했기 때문에 그 문을 닫아 주어야 하기 때문이지.
     //uri 는 어떤것으로 정해도 되과, body 는 JSon 으로 변경되어서 넘어가야 하는데?
@@ -68,5 +68,8 @@ class AuthRepo {
     apiClient.token = "";
     apiClient.updateHeader("");
     return true;
+
   }
 }
+
+

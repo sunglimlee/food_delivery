@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery/base/no_data_page.dart';
 import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
+import 'package:food_delivery/controller/location_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/model/cart_model.dart';
@@ -137,6 +138,15 @@ class CartPage extends StatelessWidget {
             onTap: () {
                 // Login 이 되어 있는지 확인하는 부분
                 if (Get.find<AuthController>().userLoggedIn()) {
+                  // 주소가 비어있다면
+                  print("LSL : in cart_page.dart >>> logged in? <<<");
+                  if (Get.find<LocationController>().addressList.isEmpty) {
+                    print("LSL : in cart_page.dart >>> yes. logged in. <<<");
+                    Get.toNamed(RouteHelper.getAddAddressPage());
+                  } else {
+                    Get.offNamed(RouteHelper.getInitial()); // 주소가 리스트에 존재한다면  초기화면으로 가게 하면 된다. 그렇지만 뒤에거가 계속 실행되는거지.
+                  }
+                  // address 도 있으면 이제 쇼핑카트로 간다.
                   // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
                   print("in car_page. Tapped????");
                   cartController.addToHistory();

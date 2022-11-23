@@ -14,10 +14,8 @@ import 'package:get/get.dart';
 
 class SignInPage extends StatelessWidget {
   SignInPage({Key? key}) : super(key: key);
-
-  var emailController = TextEditingController();
+  var phoneController = TextEditingController();
   var passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     // CircleAvatar 에 사용할 이미지를 List 로 저장하고 사용하는 걸 보여준다.
@@ -66,7 +64,7 @@ class SignInPage extends StatelessWidget {
               AppTextField(
                   hintText: "email",
                   iconData: Icons.phone,
-                  textEditingController: emailController),
+                  textEditingController: phoneController),
               SizedBox(
                 height: Dimensions.height20,
               ),
@@ -152,16 +150,12 @@ class SignInPage extends StatelessWidget {
     );
   }
   Future<void> _login(AuthController authController) async {
-    String email = emailController.text.trim();
+    String phone = phoneController.text.trim();
     String password = passwordController.text.trim();
     // 전부 문제가 있는걸 걸러준다.
-    if (email.isEmpty) { // 나중에 전화번호 길이도 체크해주자.
+    if (phone.isEmpty) { // 나중에 전화번호 길이도 체크해주자.
       showCustomSnackBar("Type in your email", title: "email");
       return;
-    }
-    if (!GetUtils.isEmail(email)) {
-      showCustomSnackBar("Please enter the correct email address");
-      return; // return 흐름을 끊어라.
     }
     if (password.isEmpty) {
       showCustomSnackBar("Type in your password", title: "Password");
@@ -176,7 +170,7 @@ class SignInPage extends StatelessWidget {
       showCustomSnackBar("All looks good", title: "Perfect");
       //print(signUpBody.toString());
       // 여기에서는 then 을 사용하였네..
-      authController.login(email, password).then((responseModel) {
+      authController.login(phone, password).then((responseModel) {
         print("LSL:in sign_up_page.dart");
         if (responseModel.isSuccess) {
           // 이제 홈 화면으로 넘겨줘야지..

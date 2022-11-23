@@ -15,6 +15,12 @@ class AppConstants {
 
   // userProfile 내용을 받아오기 위한 UII 정의부분
   static const String USER_INFO_URI = "/api/v1/customer/info";
+  // 이부분은 반드시 Json 형태로 저장되어 있어야 하겠네.. 비록 String 으로 불러들이지만 나중에 JsonDecode 를 통해서 Json 형태로 만들어 줄 수 있으니..
+  static const String USER_ADDRESS = 'user_address';
+  static const String GEOCODE_URI = '/api/v1/config/geocode-api';
+  static const String ADD_USER_ADDRESS = '/api/v1/customer/address/add';
+  static const String ADDRESS_LIST_URI = '/api/v1/customer/address/list';
+
 
   static const String TOKEN = ""; // 이제는 빈채로 있어야 되는거지..
   static const String PHONE = "";

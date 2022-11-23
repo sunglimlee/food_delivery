@@ -39,7 +39,7 @@ class AuthController extends GetxController implements GetxService {
 
 
   // registration 을 하는 이유가 뭘까? 이제 통과된 값을 Repository 로 넘겨주는 역할을 하는 거겠지?
-  Future<ResponseModel> login(String email, String password) async {
+  Future<ResponseModel> login(String phone, String password) async {
     // 이전에 signUp 을 했으면 Token 이 저장되어 있으니깐 그값을 불러들여서 siggIn 을 하도록 한다.
     // 근데 토큰으로 접근한다는게 조금 이해가 안된다. 토큰이 있어서 뭐가 다르지? 어딘가에 로그인정보가 저장되어 있어서 그걸 사용한다는 개념인가????
     print("LSL: in auth_controller, >>> Getting Token ${authRepo.getUserToken().toString()} <<<");
@@ -50,7 +50,7 @@ class AuthController extends GetxController implements GetxService {
     // 모델을 통해서 데이터를 넘겨주는게 효율적이다. 헷갈리지마라. 이건 받은 결과값을 위한 model 이다.
     late ResponseModel responseModel;
     // 이렇게 필요한 데이터와 함수를 실행해주는게 AuthController 의 역할이다.
-    Response response = await authRepo.login(email, password); // 잘봐라. 여기서 사용할 거니깐 리턴으로 또 넘겨줄 필요가 없이 이제 기다렸다 사용하면 됨.
+    Response response = await authRepo.login(phone, password); // 잘봐라. 여기서 사용할 거니깐 리턴으로 또 넘겨줄 필요가 없이 이제 기다렸다 사용하면 됨.
     if (response.statusCode == 200) { // 성공했다는 뜻
       // 당연히 response.body 안에 token 값이 저장되어 있겠지.. 서버에서 넘어오는 body 가 어떤건지 잘보자.. 이것이 response 객체를 통해서 넘오는 거니깐..
       authRepo.saveUserToken(response.body["token"]); // 토큰 저장하고
