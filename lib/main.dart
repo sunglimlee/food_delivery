@@ -4,6 +4,7 @@ import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/pages/auth/sign_up_page.dart';
 import 'package:food_delivery/routes/route_helper.dart';
+import 'package:food_delivery/utils/colors.dart';
 import 'package:get/get.dart';
 
 import 'helper/dependencies.dart' as dep;
@@ -39,7 +40,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Food Delivery App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        //primarySwatch: Colors.blue,
+        primaryColor: AppColors.mainColor,
+        //fontFamily: "Lato", // 이건 아직없었는데, 아마도 구글에서 추가해주어야 될듯..
       ),
       //home: const SplashScreen(),
       //home: const RecommendedFoodDetail(),

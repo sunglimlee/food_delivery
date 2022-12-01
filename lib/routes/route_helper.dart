@@ -1,4 +1,5 @@
 import 'package:food_delivery/pages/address/add_address_page.dart';
+import 'package:food_delivery/pages/address/pic_address_map.dart';
 import 'package:food_delivery/pages/auth/sign_in_page.dart';
 import 'package:food_delivery/pages/cart/cart_page.dart';
 import 'package:food_delivery/pages/food/popular_food_detail.dart';
@@ -17,6 +18,7 @@ class RouteHelper {
   static const String signIn = "/sign-in";
 
   static const String addAddress = "/add-address";
+  static const String pickAddressMap = "/pick-address";
 
   static String getSplashPage() => '$splashPage';
 
@@ -31,6 +33,7 @@ class RouteHelper {
   static String get getSignInPage => '$signIn'; // getCartPage() 와 똑같다. 그냥 get 을 이용해서 불러들이는거다.
 
   static String getAddAddressPage() => '$addAddress';
+  static String getPickAddressMapPage() => '$pickAddressMap';
 
   static List<GetPage> routes = [
     GetPage(name: splashPage, page: () => const SplashScreen()),
@@ -63,5 +66,9 @@ class RouteHelper {
         transition: Transition.fadeIn),
     GetPage(name: signIn, page: () => SignInPage(), transition: Transition.fadeIn),
     GetPage(name: addAddress, page: () => AddAddressPage(), transition: Transition.fadeIn),
+    GetPage(name: pickAddressMap, page: () {
+      PickAddressMap pickAddressMap = Get.arguments; // 아규먼트는 그냥 통째로 넘기네..
+      return pickAddressMap;
+    }, transition: Transition.fadeIn),
   ];
 }

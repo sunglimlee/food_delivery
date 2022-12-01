@@ -47,4 +47,9 @@ class LocationRepo {
     return await _sharedPreferences.setString(AppConstants.USER_ADDRESS, userAddress);
   }
 
+  // Http 클라이언트이기때문에 이렇게 get 으로 가져오는 형태가 가능한거지..
+  Future<Response> getZone(String lat, String lng) async {
+    return await _apiClient.getData('${AppConstants.ZONE_URI}?lat=$lat&lng=$lng');
+  }
+
 }

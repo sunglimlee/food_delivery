@@ -3,6 +3,7 @@ import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/location_controller.dart';
 import 'package:food_delivery/controller/user_controller.dart';
 import 'package:food_delivery/model/address_model.dart';
+import 'package:food_delivery/pages/address/pic_address_map.dart';
 import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
@@ -206,6 +207,12 @@ class _AddAddressPageState extends State<AddAddressPage> {
                       // 이제는 이런것 잘 알겠다. initialCameraPosition CameraPostion 받으니깐, 객체를 던지든지, 새 객체를 만들어서 넣든지 하면 되는거지..
                       // 단 한줄로 구글맵이 나오네... 일단 값이 없으니깐 임시로.. 그리고 심지어 스택안에서 드래그 된다.
                       GoogleMap(
+                        onTap: (latlon) {
+                          // 여기에 아직까지 아규먼트를 제대로 안넘긴것 같은데...
+                          Get.toNamed(RouteHelper.getPickAddressMapPage(), arguments: PickAddressMap(
+                            fromSignup: false, fromAddress: true, googleMapController: locationController.mapController,
+                          ));
+                        },
                         initialCameraPosition: CameraPosition(
                             target: _initialPosition ??
                                 const LatLng(45.51563, -122.677433),
@@ -225,8 +232,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
                           _cameraPosition = cameraPostion;
                         },
                         // 이부분은 그냥 한번만 작업해주면 되는부분
-                        // 이말은 이제 이 맵이 만들어지고 나면 이맵을 외부에서 사요할 수 있도록 컨트롤러를 가지고 있게 된다는거지..
-                        // 그러면 이 googleMapController 를 추후에 사용한다는 거지?? TODO
+                        // 이말은 이제 이 맵이 만들어지고 나면 이맵을 외부에서 사용할 수 있도록 컨트롤러에 저장한다는거지..
+                        // 그러면 이 googleMapController 를 추후에 사용한다는 거지?? 큰화면으로 볼때 사용하게 되는군..
+                        // 그러니깐 맨처음 시작지점이 된걸 googleMapController 에 저장한다는 거다.
                         onMapCreated: (googleMapController) {
                           locationController.mapController = googleMapController;
                         },

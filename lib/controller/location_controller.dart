@@ -28,7 +28,6 @@ class LocationController extends GetxController implements GetxService {
 
   // Google map 에 place 를 선택할 수 있다. 이거 괭장히 강력한 컴포넌트이다. 구글맵에서 반드시 사용해야 하는 컴포넌트이다.
   Placemark _placemark = Placemark();
-
   Placemark _pickPlacemark = Placemark();
 
   // address 를 보관하기 위한 List
@@ -50,19 +49,31 @@ class LocationController extends GetxController implements GetxService {
   // 주소가 바뀌었는지 확인하는 필드
   bool _changeAddress = true;
 
+  // for service zone
+  bool _isLoading = false;
+  // whether the user is in service zone or not
+  bool _inZone = false;
+  // showing/hiding the button as the map loads
+  // if _buttonDisabled is false we are in the service area.
+  bool _buttonDisabled = true;
+
   // Getters
-  Map get getAddress => _getAddress;
+  Map<String, dynamic> get getAddress => _getAddress;
   GoogleMapController get mapController => _mapController;
   bool get loading => _loading;
   Position get pickPosition => _pickPosition;
   Position get position => _position;
   Placemark get placemark => _placemark;
-  Placemark get pickPlacemark => _pickPlacemark;
+  Placemark get pickPlacemark => _pickPlacemark; // 주소가 저장되어 있다.
   List<String> get addressTypeList => _addressTypeList;
   int get addressTypeIndex => _addressTypeIndex;
   // 아직 헷갈리는게 왜 2개의 addressList 가 있어야 하는가이다. TODO
   List<AddressModel> get addressList => _addressList;
   List<AddressModel> get allAddressList => _allAddressList;
+  bool get isLoading => _isLoading;
+  bool get inZone => _inZone;
+  bool get buttonDisabled => _buttonDisabled;
+
 
   // Setters
   set pickPlacemark(Placemark value) {
@@ -81,7 +92,7 @@ class LocationController extends GetxController implements GetxService {
     // 여기 cameraPosition 객체가 외부에서 들어오네.. 이것도 업데이트를 시켜줄까? 이론적으로 업데이트 할 수 있지.
     if (_updateAddressData) {
       _loading = true;
-      update();
+      update(); // loading 화면이 보이도록 하려고.. update() 위 아래 두번 사용한다.
       try {
         if (fromAddress) {
           // 이 포지션은 드레그했을 때의 포지션 업데이트를 애기하는 것이고
@@ -96,6 +107,12 @@ class LocationController extends GetxController implements GetxService {
               timestamp: DateTime.now(), heading: 1, accuracy: 1, altitude: 1, speed: 1, speedAccuracy: 1
           );
         }
+
+        // 옮긴 위치가 서비스할 수 있는 Zone 인지 확인하는 부분
+        ResponseModel _responseModel = await getZone(cameraPosition.target.latitude.toString(), cameraPosition.target.longitude.toString(),
+            false);
+        _buttonDisabled = !(_responseModel.isSuccess);
+
         if (_changeAddress) {
           // 여기가 서버와 통신하고 싶은 부분이다.
           // 일단 나의 서버로 보내고 > 다음 구글 서버로 보내고 > 다시 구글서버가 나에게 스트링을 보낸다.
@@ -109,6 +126,10 @@ class LocationController extends GetxController implements GetxService {
       }catch (e) {
         print(e);
       }
+      _loading = false;
+      update();
+    } else {
+      _updateAddressData = true;
     }
   }
 
@@ -213,5 +234,69 @@ class LocationController extends GetxController implements GetxService {
   getUserAddressFromLocalStorage() {
     return _locationRepo.getUserAddress();
   }
+
+  void setAddAddressData() {
+    _position = _pickPosition;
+    _placemark = _pickPlacemark;
+    _updateAddressData = false;
+    update(); // 여기보면 항상 여기 Getx field 값이 변경되고 나면 update() 를 해준다. 그래야 이 함수가 실행되는 의미가 있는거지. 리턴값을 비록 없지만...
+  }
+
+  // zone 인지 확인하는 메서드
+  /*
+  한가지 궁금한게 있는게 만약에 함수와 필드가 있다면 어떻게 연결되냐는것이지.. 함수에서 값을 출력할 수도 있고, 필드의 값을 넣을 수도 있는데 그 필드를 어떻게 알고
+  둘을 연결하느냐이다.. 그런데 현실은 그게 쉽지가 않다는거지..
+   */
+  Future<ResponseModel> getZone(String lat, String lng, bool markerLoad) async {
+    // [question] The non-nullable local variable '_responseModel' must be assigned before it can be used.
+    // [answer] put 'late'
+    late ResponseModel responseModel;
+    if (markerLoad) {
+      _loading = true; // 로딩을 한다는것
+    } else {
+      _isLoading = true;
+    }
+    update();
+    /*
+    await Future.delayed(Duration(seconds: 2), () {
+      _responseModel = ResponseModel(true, "success");
+      if (markerLoad) {
+        _loading = false; // 로딩을 한다는것
+      } else {
+        _isLoading = false;
+      }
+      _inZone = true;
+    });
+*/
+    Response response = await _locationRepo.getZone(lat, lng);
+    if (response.statusCode == 200) {
+      // 현재는 시뮬레이션 한거다. 나중에 zoned_id 가 1 이외의 다양한 값들이 나와서 할 수 있게 되겠지.. TODO
+      /*
+          if (response.body['zoned_id'] != 2) {
+            // http server 에서 response.body 로 보내주는 것중에서 zone_id 를 사용하기로 한다.
+            responseModel = ResponseModel(false, response.body["zone_id"].toString());
+            _inZone = false;
+          } else {
+            responseModel = ResponseModel(true, response.body["zone_id"].toString());
+            _inZone = true;
+          }
+    */
+      _inZone = true;
+      responseModel = ResponseModel(false, response.body["zone_id"].toString());
+    } else {
+      _inZone = false;
+      responseModel = ResponseModel(false, response.statusText!.toString());
+    }
+    print('zone response code is ${response.statusCode}'); // 200, 404 (route proble), 403(permision problem), 500(most problem)
+    if (markerLoad) {
+      _loading = false; // 로딩을 한다는것
+    } else {
+      _isLoading = false;
+    }
+    update();
+    return responseModel;
+
+  }
+
 }
 
