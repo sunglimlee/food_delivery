@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/base/custom_button.dart';
 import 'package:food_delivery/controller/location_controller.dart';
+import 'package:food_delivery/pages/address/widgets/search_location_dialog_page.dart';
 import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
@@ -74,6 +75,12 @@ class _PickAddressMapState extends State<PickAddressMap> {
                         Get.find<LocationController>()
                             .updatePosition(_cameraPosition, false); // 움직이는걸 멈추자마자 저장을 시작한다.
                       },
+                      onMapCreated: (GoogleMapController googleMapController) {
+                        _mapController = googleMapController;
+                        if (!widget.fromAddress) {
+                          // TODO
+                        }
+                      },
                     ),
                     // stack 을 사용하는 이유가 여기 나오네..
                     // 구글맵이 보여질 때 가장 중간을 기준으로 보여지니깐 여기 stack 에서서도 이렇게 pick 으로 선택할 수 있네..
@@ -87,38 +94,44 @@ class _PickAddressMapState extends State<PickAddressMap> {
                             )
                           : CircularProgressIndicator(),
                     ),
+                    // 윗쪽의 주소부분 (Showing and selection address)
                     Positioned(
                       top: Dimensions.height45,
                       left: Dimensions.height20,
                       right: Dimensions.height20,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.edgeInsets10),
-                        height: Dimensions.height10 * 5,
-                        decoration: BoxDecoration(
-                          color: AppColors.mainColor,
-                          borderRadius:
-                              BorderRadius.circular(Dimensions.radius20 / 2),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              size: Dimensions.edgeInsets5 * 5,
-                              color: AppColors.yellowColor,
-                            ),
-                            Expanded(
-                                child: Text(
-                              "${locationController.pickPlacemark.name ?? ''}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                //fontSize: Dimensions.font16,
+                      child: InkWell(
+                        onTap: ()=> Get.dialog(LocationDialog(googleMapController: _mapController)),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.edgeInsets10),
+                          height: Dimensions.height10 * 5,
+                          decoration: BoxDecoration(
+                            color: AppColors.mainColor,
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius20 / 2),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                size: Dimensions.edgeInsets5 * 5,
+                                color: AppColors.yellowColor,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow
-                                  .ellipsis, // TextOverflow 자체가 enum 이네. 그래서 ellipsis 를 바로 쓸 수 있구나.
-                            )),
-                          ],
+                              Expanded(
+                                  child: Text(
+                                "${locationController.pickPlacemark.name ?? ''}",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  //fontSize: Dimensions.font16,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow
+                                    .ellipsis, // TextOverflow 자체가 enum 이네. 그래서 ellipsis 를 바로 쓸 수 있구나.
+                              )),
+                              SizedBox(width: Dimensions.edgeInsets10,),
+                              Icon(Icons.search, size: Dimensions.edgeInsets5*5, color: AppColors.yellowColor,),
+                            ],
+                          ),
                         ),
                       ),
                     ),

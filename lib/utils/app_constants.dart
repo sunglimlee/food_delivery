@@ -23,6 +23,10 @@ class AppConstants {
   static const String ADD_USER_ADDRESS = '/api/v1/customer/address/add';
   static const String ADDRESS_LIST_URI = '/api/v1/customer/address/list';
 
+  // 서치 검색을 위한 api
+  static const String SEARCH_LOCATION_URI = '/api/v1/config/place-api-autocomplete';
+  static const String PLACE_DETAILS_URI = '/api/v1/config/place-api-detail';
+
 
   static const String TOKEN = ""; // 이제는 빈채로 있어야 되는거지..
   static const String PHONE = "";

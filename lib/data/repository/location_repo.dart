@@ -52,4 +52,14 @@ class LocationRepo {
     return await _apiClient.getData('${AppConstants.ZONE_URI}?lat=$lat&lng=$lng');
   }
 
+  // 검색 완성을 위한 메서드 부분
+  Future<Response> searchLocation(String text) async {
+    return await _apiClient.getData('${AppConstants.SEARCH_LOCATION_URI}?search_text=$text');
+  }
+  // 주소를 선택하고 서버로 보내는 부분
+  /// 서버에 placeID 값을 받아서 보내면 유니크 한 값이니깐 여러가지 정보를 다시 받아올 수 있다. 가령 Latitude & Logitude 같은 것들..
+  /// predictions list 에서 description 과 placeId 를 받아올 수 있다.
+  Future<Response> setLocation(string, placeID) async {
+    return await _apiClient.getData('${AppConstants.PLACE_DETAILS_URI}?placeid=$placeID');
+  }
 }

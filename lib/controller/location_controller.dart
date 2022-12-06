@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:food_delivery/data/api/api_checker.dart';
 import 'package:food_delivery/data/repository/location_repo.dart';
 import 'package:food_delivery/model/address_model.dart';
 import 'package:food_delivery/model/response_model.dart';
@@ -7,11 +9,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:google_maps_webservice/src/places.dart';
 
 class LocationController extends GetxController implements GetxService {
   final LocationRepo _locationRepo;
-  LocationController({required LocationRepo locationRepo}) : _locationRepo = locationRepo;
+
+  LocationController({required LocationRepo locationRepo})
+      : _locationRepo = locationRepo;
 
   // 로딩하고 있는지 확인하는 필드
   bool _loading = false;
@@ -24,7 +28,6 @@ class LocationController extends GetxController implements GetxService {
 
   // GoogleMapController
   late GoogleMapController _mapController;
-
 
   // Google map 에 place 를 선택할 수 있다. 이거 괭장히 강력한 컴포넌트이다. 구글맵에서 반드시 사용해야 하는 컴포넌트이다.
   Placemark _placemark = Placemark();
@@ -51,37 +54,55 @@ class LocationController extends GetxController implements GetxService {
 
   // for service zone
   bool _isLoading = false;
+
   // whether the user is in service zone or not
   bool _inZone = false;
+
   // showing/hiding the button as the map loads
   // if _buttonDisabled is false we are in the service area.
   bool _buttonDisabled = true;
 
+  // save the google map suggestions for address
+  List<Prediction> _predictionList = []; // 위의 places import 가 있어야 한다.
+
   // Getters
   Map<String, dynamic> get getAddress => _getAddress;
+
   GoogleMapController get mapController => _mapController;
+
   bool get loading => _loading;
+
   Position get pickPosition => _pickPosition;
+
   Position get position => _position;
+
   Placemark get placemark => _placemark;
+
   Placemark get pickPlacemark => _pickPlacemark; // 주소가 저장되어 있다.
   List<String> get addressTypeList => _addressTypeList;
+
   int get addressTypeIndex => _addressTypeIndex;
+
   // 아직 헷갈리는게 왜 2개의 addressList 가 있어야 하는가이다. TODO
   List<AddressModel> get addressList => _addressList;
-  List<AddressModel> get allAddressList => _allAddressList;
-  bool get isLoading => _isLoading;
-  bool get inZone => _inZone;
-  bool get buttonDisabled => _buttonDisabled;
 
+  List<AddressModel> get allAddressList => _allAddressList;
+
+  bool get isLoading => _isLoading;
+
+  bool get inZone => _inZone;
+
+  bool get buttonDisabled => _buttonDisabled;
 
   // Setters
   set pickPlacemark(Placemark value) {
     _pickPlacemark = value;
   }
+
   set placemark(Placemark value) {
     _placemark = value;
   }
+
   set mapController(GoogleMapController mapController) {
     _mapController = mapController;
   }
@@ -97,19 +118,31 @@ class LocationController extends GetxController implements GetxService {
         if (fromAddress) {
           // 이 포지션은 드레그했을 때의 포지션 업데이트를 애기하는 것이고
           _position = Position(
-            latitude: cameraPosition.target.latitude, longitude: cameraPosition.target.longitude,
-            timestamp: DateTime.now(), heading: 1, accuracy: 1, altitude: 1, speed: 1, speedAccuracy: 1
-          );
+              latitude: cameraPosition.target.latitude,
+              longitude: cameraPosition.target.longitude,
+              timestamp: DateTime.now(),
+              heading: 1,
+              accuracy: 1,
+              altitude: 1,
+              speed: 1,
+              speedAccuracy: 1);
         } else {
           // 여기 포지션은 클릭을 해서 선택(pick) 한 포지션 업데이터를 애기하는 것이다.
           _pickPosition = Position(
-              latitude: cameraPosition.target.latitude, longitude: cameraPosition.target.longitude,
-              timestamp: DateTime.now(), heading: 1, accuracy: 1, altitude: 1, speed: 1, speedAccuracy: 1
-          );
+              latitude: cameraPosition.target.latitude,
+              longitude: cameraPosition.target.longitude,
+              timestamp: DateTime.now(),
+              heading: 1,
+              accuracy: 1,
+              altitude: 1,
+              speed: 1,
+              speedAccuracy: 1);
         }
 
         // 옮긴 위치가 서비스할 수 있는 Zone 인지 확인하는 부분
-        ResponseModel _responseModel = await getZone(cameraPosition.target.latitude.toString(), cameraPosition.target.longitude.toString(),
+        ResponseModel _responseModel = await getZone(
+            cameraPosition.target.latitude.toString(),
+            cameraPosition.target.longitude.toString(),
             false);
         _buttonDisabled = !(_responseModel.isSuccess);
 
@@ -118,12 +151,17 @@ class LocationController extends GetxController implements GetxService {
           // 일단 나의 서버로 보내고 > 다음 구글 서버로 보내고 > 다시 구글서버가 나에게 스트링을 보낸다.
           // 이제는 Future 를 이해할 수 있지? 여기서 값의 결과가 나올 때까지 기다리고 있다. 그러고 싶지 않으면 then 을 사용하든가...
           // 왜냐면 이걸 포함하는 함수가 Future 를 리턴하지 않으니깐.. 여기가 종결지점이라는 거지..
-          String _address = await getAddressfromGeocode(LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude));
+          String _address = await getAddressfromGeocode(LatLng(
+              cameraPosition.target.latitude, cameraPosition.target.longitude));
           // 이제 어느페이지에서 왔는지 확인하고 각각의 placeMark 에 이름을 넣어주었다.
-          fromAddress?_placemark=Placemark(name: _address): _pickPlacemark=Placemark(name: _address);
+          fromAddress
+              ? _placemark = Placemark(name: _address)
+              : _pickPlacemark = Placemark(name: _address);
           print('${_placemark.name}');
+        } else {
+          _changeAddress = true;
         }
-      }catch (e) {
+      } catch (e) {
         print(e);
       }
       _loading = false;
@@ -157,8 +195,7 @@ class LocationController extends GetxController implements GetxService {
     try {
       // 그래서 map 객체를 addressModel 객체로 변환해주었다.
       addressModel = AddressModel.fromJsonByFactoryConstructor(_getAddress);
-
-    } catch (e){
+    } catch (e) {
       print(e);
     }
     return addressModel;
@@ -168,7 +205,6 @@ class LocationController extends GetxController implements GetxService {
   void setAddressTypeIndex(int index) {
     _addressTypeIndex = index;
     update(); // 화면을 고치고
-
   }
 
   // 함수는 두가지를 생가하자. 1. 어떤 값을 집어넣어줄건지 정하는것과, 2. 어떤 결과값을 기대하고 있는지를...
@@ -180,15 +216,17 @@ class LocationController extends GetxController implements GetxService {
     // 값을 전달해줄 때에도 ResponseModel 로 전달해주면 좋지..
     ResponseModel responseModel;
     // 여기에서 값이 이상 없는지 확인해 주어야 하네.. repository 는 그냥 중계기 역할만 하는거고..
-    if (response.statusCode == 200) { // passed, 서버에 저장이 완료되었는데..
+    if (response.statusCode == 200) {
+      // passed, 서버에 저장이 완료되었는데..
       await getAddressList(); // 잘기억하자. 이런함수는 값이 나오지는 않지만 내 필드에 저장된다.
       String message = response.body["message"]; // 기억하자. body 는 json 타입이다.
       responseModel = ResponseModel(true, message);
       // 여기서 뭘 또 save 를 한다는거지? 혹시 로컬에다가?
       await saveUserAddress(addressModel);
-  } else {
+    } else {
       responseModel = ResponseModel(false, response.statusText!);
-      print("LSL : in location_controller.dart : >>> could\'t save the address");
+      print(
+          "LSL : in location_controller.dart : >>> could\'t save the address");
     }
     update(); // 바뀐 값으로 다시 업데이트
     return responseModel;
@@ -287,7 +325,8 @@ class LocationController extends GetxController implements GetxService {
       _inZone = false;
       responseModel = ResponseModel(false, response.statusText!.toString());
     }
-    print('zone response code is ${response.statusCode}'); // 200, 404 (route proble), 403(permision problem), 500(most problem)
+    print(
+        'zone response code is ${response.statusCode}'); // 200, 404 (route proble), 403(permision problem), 500(most problem)
     if (markerLoad) {
       _loading = false; // 로딩을 한다는것
     } else {
@@ -295,8 +334,62 @@ class LocationController extends GetxController implements GetxService {
     }
     update();
     return responseModel;
-
   }
 
-}
+  // 검색조건을 구현하는 함수
+  Future<List<Prediction>> searchLocation(
+      BuildContext context, String text) async {
+    if (text.isNotEmpty) {
+      Response response = await _locationRepo.searchLocation(text);
+      if (response.statusCode == 200 && response.body['status'] == 'OK') {
+        _predictionList = []; // 초기화를 해주고
+        response.body['predictions'].forEach((prediction) {
+          _predictionList.add(Prediction.fromJson(prediction));
+        });
+      } else {
+        // 문제가 있으면
+        /*
+        여기서 잠시만 생각해보자. 해당 코드를 가지고 있고.. 그 코드를 이욯해서 어떤 액션을 취하고 싶다면 여기에서 조건을 만들어서 작업을 해도 되겠지..
+        그렇지만 여기서 하지 않고 클래스를 만들어서 하기로 하는데 그 클래스를 static 으로 만들어서 작업하기로 하고 response 를 넘겨주기로 한다.
+        그러면 여기서 연속적으로 계속 작업이 되는 거지..
+        그리고 그 값을 가지고 조건문을 이용해서 새로운 페이지로 넘겨줄 것인가 아니면 메세지를 보여줄 것인가를 정하는것이다.
+        클래스의 사용도 결국 나의 작업의 연장선상이라고 생각하면 된다.
+         */
+        ApiChecker.checkApi(response);
+      }
+    }
+    return _predictionList;
+  }
 
+  // 검색조건을 선택하고 서버로 보내는 함수
+  setLocation(
+      String placeId, String address, GoogleMapController mapController) async {
+    _loading = true; // animation starts
+    update();
+    PlacesDetailsResponse detail; // 그냥 이객체로 받아와야 하는구나.
+    Response response = await _locationRepo.setLocation(address, placeId);
+    // 객체를 위해서 미리 이 객체는 fromJson 도 제공하고 있고.. 그냥 객체선언하고 fromJson 으로 객체 만들면 되네..  어디서? response.body 에서부터
+    detail = PlacesDetailsResponse.fromJson(response.body);
+    // 그러니깐 가지고 있는 데이터를 이용해서 새롭게 Position 객체를 만든거지.. 만든 이객체는 이제부터 참조변수가 있으므로 이걸로 이용할 수 있다.
+    _pickPosition = Position(
+      latitude: detail.result.geometry!.location.lat,
+      longitude: detail.result.geometry!.location.lng,
+      timestamp: DateTime.now(),
+      accuracy: 1,
+      altitude: 1,
+      heading: 1,
+      speedAccuracy: 1,
+      speed: 1,
+    );
+    _pickPlacemark = Placemark(name: address);
+    _changeAddress = false;
+    if (!mapController.isNull) {
+      // 받은 lat, lng 로 카메라의 위치를 바꾼다. mapController.animateCamera 를 사용하는구나.
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(detail.result.geometry!.location.lat,
+              detail.result.geometry!.location.lng), zoom: 17)));
+    }
+    _loading = false;
+    update();
+  }
+}
