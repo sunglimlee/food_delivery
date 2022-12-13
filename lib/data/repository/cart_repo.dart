@@ -101,4 +101,9 @@ class CartRepo extends GetxController {
     cartHistory.clear();
     shardPreferences.remove(AppConstants.CART_HISTORY_LIST);
   }
+
+  void removeCartSharedPreference() {
+    shardPreferences.remove(AppConstants.CART_LIST);
+    shardPreferences.remove(AppConstants.CART_HISTORY_LIST);
+  }
 }

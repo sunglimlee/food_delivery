@@ -71,6 +71,7 @@ class Dimensions {
 
   // bottomNavigationBar height
   static double bottomeNavigationBarHeight = biggerAxis / (844 / 95);
+
 }
 
 /*

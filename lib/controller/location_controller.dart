@@ -107,6 +107,7 @@ class LocationController extends GetxController implements GetxService {
     _mapController = mapController;
   }
 
+    // 그런데 async 인데 왜 Future<void> 가 아닌가? TODO
   // 외부에서 포지션 바꾸는걸 멈추는 순간 포지션 업데이트가 일어난다.
   void updatePosition(CameraPosition cameraPosition, bool fromAddress) async {
     // 주소가 업데이트가 되었으면 이제 그 주소를 이용해서 Position 을 업데이트 할 수 있는거지

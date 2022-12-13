@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery/base/no_data_page.dart';
+import 'package:food_delivery/base/show_custom_snackbar.dart';
 import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/location_controller.dart';
+import 'package:food_delivery/controller/order_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
+import 'package:food_delivery/controller/user_controller.dart';
 import 'package:food_delivery/model/cart_model.dart';
+import 'package:food_delivery/model/place_order_model.dart';
 import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
@@ -100,92 +104,123 @@ class CartPage extends StatelessWidget {
               topLeft: Radius.circular(Dimensions.radius20),
               topRight: Radius.circular(Dimensions.radius20)),
         ),
-        child: (cartController.getItems.length > 0) ? Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              // Shopping Cart 에 수량을 입력하기 위한 작업. 근데 quantity 만 가지고 다루고 있다.
-              //padding: EdgeInsets.all(Dimensions.edgeInsets20),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radius20),
-                  color: Colors.white),
-              child: Row(
-                //crossAxisAlignment: CrossAxisAlignment.start,
+        child: (cartController.getItems.length > 0)
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: Dimensions.height10,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: Dimensions.edgeInsets20,
-                        bottom: Dimensions.edgeInsets20,
-                        left: Dimensions.edgeInsets5,
-                        right: Dimensions.edgeInsets5),
-                    child: BigText(
-                      text:
-                          "Total Items : ${cartController.totalItems.toString()}",
-                      //popularProduct.quantity.toString(), TODO
-                      color: Colors.black45,
+                  Container(
+                    // Shopping Cart 에 수량을 입력하기 위한 작업. 근데 quantity 만 가지고 다루고 있다.
+                    //padding: EdgeInsets.all(Dimensions.edgeInsets20),
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white),
+                    child: Row(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: Dimensions.height10,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: Dimensions.edgeInsets20,
+                              bottom: Dimensions.edgeInsets20,
+                              left: Dimensions.edgeInsets5,
+                              right: Dimensions.edgeInsets5),
+                          child: BigText(
+                            text:
+                                "Total Items : ${cartController.totalItems.toString()}",
+                            //popularProduct.quantity.toString(), TODO
+                            color: Colors.black45,
+                          ),
+                        ),
+                        SizedBox(
+                          width: Dimensions.height10,
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    width: Dimensions.height10,
+                  GestureDetector(
+                    // 체크아웃 버턴 부분
+                    onTap: () {
+                      // Login 이 되어 있는지 확인하는 부분
+                      if (Get.find<AuthController>().userLoggedIn()) {
+                        print("LSL : in cart_page.dart >>> logged in? <<<");
+
+                        // 주소가 비어있다면
+                        if (Get.find<LocationController>()
+                            .addressList
+                            .isEmpty) {
+                          print(
+                              "LSL : in cart_page.dart >>> yes. logged in. <<<");
+                          Get.toNamed(RouteHelper.getAddAddressPage());
+                        } else {
+                          //Get.offNamed(RouteHelper.getInitial()); // 주소가 리스트에 존재한다면  초기화면으로 가게 하면 된다. 그렇지만 뒤에거가 계속 실행되는거지.
+                          // 여기에서 payment 페이지로 가도록 한다. 왜냐하면 오더했고 유저도 로그인상태이므로 카트버턴을 눌렀으니 payment 로 가야지..
+                          //Get.offNamed(RouteHelper.getPaymentPage("27", Get.find<UserController>().userModel!.id!));
+                          // 여기서 잘봐라. 함수의 결과값을 넘기려면 _callback(xxx) 라고 넘겼겠지만 잘보면 그냥 함수의 이름만 넘기고 있다. 그말은 콜백함수로 넘기겠다는 뜻이다.
+                          // 여기서 이제까지 만든 PlaceOrderModel 을 넘겨주도록 하자.. 그러니깐 여기서 모델의 객체를 한꺼번에 다 만들어서 넘겨준다는 거지.
+                          // 모델을 만들어서 그 내용을 넘겨주려면 추가로 다른부분에서 데이터를 접근해서 가지고 와야하는구나..
+                          var location =
+                              Get.find<LocationController>().getUserAddress();
+                          var cart = Get.find<CartController>().getItems;
+                          var user = Get.find<UserController>().userModel;
+                          PlaceOrderModel placeOrderModel = PlaceOrderModel(
+                              cart: cart,
+                              orderAmount: 100.00,
+                              orderNote: 'Not note Yet',
+                              distance: 10,
+                              address: location.address,
+                              latitude: location.latitude,
+                              longitude: location.longitude,
+                              contactPersonName: user.fName,
+                              contactPersonNumber: user.phone);
+                          // 이렇게 수집해서 만든 객체를 이제 간편하게 통째로 함수로 넘겨준다.
+                          Get.find<OrderController>()
+                              .placeOrder(placeOrderModel, _callback);
+                        }
+                        // address 도 있으면 이제 쇼핑카트로 간다.
+                        // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
+                        print("in car_page. Tapped????");
+                        cartController.addToHistory();
+                      } else {
+                        // 이 부분을 내가 일부러 getter 를 사용했다. getter 사용하니깐 괄호를 넣을 필요가 없네..
+                        Get.toNamed(RouteHelper.getSignInPage);
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          top: Dimensions.edgeInsets20,
+                          bottom: Dimensions.edgeInsets20,
+                          left: Dimensions.edgeInsets15,
+                          right: Dimensions.edgeInsets15),
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.radius20),
+                          color: Colors.green[200]),
+                      child: Row(
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BigText(
+                            size: Dimensions.font16,
+                            text:
+                                '\$${double.parse(cartController.totalAmount.toString())}',
+                            color: Colors.black45,
+                          ),
+                          SizedBox(
+                            width: Dimensions.height20,
+                          ),
+                          BigText(
+                            text: 'Checkout',
+                            color: Colors.black45,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
-              ),
-            ),
-            GestureDetector( // 체크아웃 버턴 부분
-            onTap: () {
-                // Login 이 되어 있는지 확인하는 부분
-                if (Get.find<AuthController>().userLoggedIn()) {
-                  // 주소가 비어있다면
-                  print("LSL : in cart_page.dart >>> logged in? <<<");
-                  if (Get.find<LocationController>().addressList.isEmpty) {
-                    print("LSL : in cart_page.dart >>> yes. logged in. <<<");
-                    Get.toNamed(RouteHelper.getAddAddressPage());
-                  } else {
-                    Get.offNamed(RouteHelper.getInitial()); // 주소가 리스트에 존재한다면  초기화면으로 가게 하면 된다. 그렇지만 뒤에거가 계속 실행되는거지.
-                  }
-                  // address 도 있으면 이제 쇼핑카트로 간다.
-                  // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
-                  print("in car_page. Tapped????");
-                  cartController.addToHistory();
-                } else {
-                  // 이 부분을 내가 일부러 getter 를 사용했다. getter 사용하니깐 괄호를 넣을 필요가 없네..
-                  Get.toNamed(RouteHelper.getSignInPage);
-                }
-              },
-              child: Container(
-                padding: EdgeInsets.only(
-                    top: Dimensions.edgeInsets20,
-                    bottom: Dimensions.edgeInsets20,
-                    left: Dimensions.edgeInsets15,
-                    right: Dimensions.edgeInsets15),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    color: Colors.green[200]),
-                child: Row(
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BigText(
-                      size: Dimensions.font16,
-                      text:
-                          '\$${double.parse(cartController.totalAmount.toString())}',
-                      color: Colors.black45,
-                    ),
-                    SizedBox(
-                      width: Dimensions.height20,
-                    ),
-                    BigText(
-                      text: 'Checkout',
-                      color: Colors.black45,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ) : Container(),
+              )
+            : Container(),
       );
     });
   }
@@ -199,14 +234,16 @@ class CartPage extends StatelessWidget {
           left: Dimensions.edgeInsets20,
           right: Dimensions.edgeInsets20),
       //color: Colors.red,
-      child: MediaQuery.removePadding( // 리스트뷰에 기본적으로 적용되는 padding 을 지워준다.
+      child: MediaQuery.removePadding(
+        // 리스트뷰에 기본적으로 적용되는 padding 을 지워준다.
         context: Get.context!,
         removeTop: true,
         child: GetBuilder<CartController>(
           builder: (cartController) {
             return (cartController.getItems.length < 1)
                 ? _noProduct_inListViewPart()
-                : ListView.builder( // 되도록이면 ListView.builder 를 사용하자. 대용량의 자료처리에 적합하다.
+                : ListView.builder(
+                    // 되도록이면 ListView.builder 를 사용하자. 대용량의 자료처리에 적합하다.
                     //padding: EdgeInsets.all(0), // 리스트뷰에도 자동으로 안쪽으로 패딩이 들어가는 구나.. 그래서 여기서 0을 해주던지 아니면 MediaQuery 를 이용해서 패딩을 강제로 없애든지 해야하는구나.
                     itemCount: cartController.getItems.length,
                     itemBuilder: ((context, index) {
@@ -241,16 +278,16 @@ class CartPage extends StatelessWidget {
                                   print(
                                       "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
                                 } else {
-                                  if (recommendedListIndex < 0) { // 히스토리 페이지에서 가지고 프로덕트가 더이상 사용할 수 없을 수도 있기 때문에 그냥 라우팅 못한다고 메세지를 띄워준다.
-                                    Get.snackbar(
-                                        "History Product.", "Product review is not available for the history product.",
-                                        backgroundColor: AppColors.mainColor, colorText: Colors.black);
-
+                                  if (recommendedListIndex < 0) {
+                                    // 히스토리 페이지에서 가지고 프로덕트가 더이상 사용할 수 없을 수도 있기 때문에 그냥 라우팅 못한다고 메세지를 띄워준다.
+                                    Get.snackbar("History Product.",
+                                        "Product review is not available for the history product.",
+                                        backgroundColor: AppColors.mainColor,
+                                        colorText: Colors.black);
                                   } else {
                                     // recommended Items
                                     print(
-                                        "in CartPage. cartController.getItems[index].product!.id! ${cartController
-                                            .getItems[index].product!.id!}");
+                                        "in CartPage. cartController.getItems[index].product!.id! ${cartController.getItems[index].product!.id!}");
                                     Get.toNamed(RouteHelper.getRecommendedFood(
                                         recommendedListIndex,
                                         RouteHelper.cartPage));
@@ -402,6 +439,24 @@ class CartPage extends StatelessWidget {
     );
   }
 
+  /// 카트에 아무것도 없다면 전체화면으로 보여주는 위젯
   Widget _noProduct_inListViewPart() =>
       Center(child: const NoDataPage(text: "Shopping cart is empty."));
+
+  /// 주문한후 Payment 결과의 성공여부에 따라 화면전환하는 콜백함수
+  _callback(
+    bool isSuccess,
+    String message,
+    String orderId,
+  ) {
+    if (isSuccess) {
+      Get.find<CartController>().clear();
+      Get.find<CartController>().removeCartSharedPreference();
+      Get.find<CartController>().addToHistory();
+      Get.offNamed(RouteHelper.getPaymentPage(
+          orderId, Get.find<UserController>().userModel!.id!));
+    } else {
+      showCustomSnackBar(message);
+    }
+  }
 }

@@ -50,6 +50,7 @@ class PopularFoodDetail extends StatelessWidget {
         fontWeight: FontWeight.bold,
       ),
       lessStyle: TextStyle(
+        //overflow: TextOverflow.ellipsis,
         color: Colors.red[300],
         fontSize: Dimensions.font16,
         fontWeight: FontWeight.bold,

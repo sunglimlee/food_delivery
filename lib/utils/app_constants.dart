@@ -35,4 +35,7 @@ class AppConstants {
 
   static const String CART_LIST = "cart-list";
   static const String CART_HISTORY_LIST = "cart-history-list";
+
+  // orders
+  static const String PLACE_ORDER_URI = "/api/v1/customer/order/place";
 }

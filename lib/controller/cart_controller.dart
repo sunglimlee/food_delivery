@@ -191,11 +191,13 @@ class CartController extends GetxController {
     print("in cart_controller. _items 의 값은 ${_items.length}");
   }
 
+  /// 로컬에 카트 히스토리 리스트를 넣는 함수
   void addToHistory() {
     cartRepo.addToCartHistoryList();
     clear();
   }
 
+  /// _items 맵 전부 다지우고, update() 로 화면 갱신한다.
   void clear() {
     _items = {}; // 전부다 지우고.
     update(); // 다 지워지니깐 화면에서도 다지우고..
@@ -220,6 +222,10 @@ class CartController extends GetxController {
   }
   void updateCart() {
     update();
+  }
+  /// 로컬에 들어있는 데이터들을 전부 지워준다.
+  void removeCartSharedPreference() {
+    cartRepo.removeCartSharedPreference();
   }
 
 
