@@ -72,7 +72,7 @@ class AuthController extends GetxController implements GetxService {
     authRepo.saveUserNumberAndPassword(number, password);
   }
 
-  // 쇼핑하고 결재할 때 이미 login 이 되었는지 확인하는 함수, Token 을 사용하는 거지..
+  /// 쇼핑하고 결재할 때 이미 login 이 되었는지 확인하는 함수, Token 을 사용하는 거지..
   bool userLoggedIn() {
     return authRepo.userLoggedIn();
   }

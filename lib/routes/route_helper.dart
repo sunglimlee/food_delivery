@@ -8,7 +8,7 @@ import 'package:food_delivery/pages/food/recommended_food_detail.dart';
 import 'package:food_delivery/pages/payment/order_success_page.dart';
 import 'package:food_delivery/pages/payment/payment_page.dart';
 import 'package:food_delivery/pages/splash/splash_page.dart';
-import 'package:food_delivery/widget/home_page.dart';
+import 'package:food_delivery/pages/home/home_page.dart';
 import 'package:get/get.dart';
 
 class RouteHelper {

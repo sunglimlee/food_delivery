@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/base/custom_app_bar.dart';
 import 'package:food_delivery/base/custom_loader.dart';
 import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
@@ -25,10 +26,7 @@ class AccountPage extends StatelessWidget {
     }
     return Scaffold(
       // 앱바 영역
-      appBar: AppBar(
-        title: BigText(text: "Profile", size: 24, color: Colors.white),
-        backgroundColor: AppColors.mainColor,
-      ),
+      appBar: CustomAppBar(title: "Profile",),
       // controller 의 값이 바뀌었고 update() 가 일어나면 여기서 데이터르 바구어 주어야 하기 때문에 GetBuilder 로 감싸주어야 한다.
       body: GetBuilder<UserController>(builder: (userController) {
         // 아! 헷갈리게 두개나 걸어놨네....
