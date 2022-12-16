@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery/base/common_text_button.dart';
 import 'package:food_delivery/base/no_data_page.dart';
 import 'package:food_delivery/base/show_custom_snackbar.dart';
 import 'package:food_delivery/controller/auth_controller.dart';
@@ -10,17 +11,24 @@ import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/controller/user_controller.dart';
 import 'package:food_delivery/model/cart_model.dart';
 import 'package:food_delivery/model/place_order_model.dart';
+import 'package:food_delivery/pages/order/delivery_options.dart';
 import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimensions.dart';
 import 'package:food_delivery/widget/app_icon.dart';
+import 'package:food_delivery/widget/app_text_field.dart';
 import 'package:food_delivery/widget/big_text.dart';
+import 'package:food_delivery/pages/order/payment_option_button.dart';
 import 'package:food_delivery/widget/small_text.dart';
+import 'package:food_delivery/widget/style.dart';
 import 'package:get/get.dart';
 
 class CartPage extends StatelessWidget {
-  const CartPage({Key? key}) : super(key: key);
+  final TextEditingController _noteTextEditingController =
+      TextEditingController();
+
+  CartPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,141 +95,293 @@ class CartPage extends StatelessWidget {
     );
   }
 
+  // 이렇게 함수로 나눠놓은게 안좋은 방법이었네..
   Widget _bottomNavBar() {
     return GetBuilder<CartController>(builder: (cartController) {
+      _noteTextEditingController.text = Get.find<OrderController>().foodNote;
       return Container(
-        height: Dimensions.bottomeNavigationBarHeight,
-        padding: EdgeInsets.only(
-/*
+          height: Dimensions.bottomeNavigationBarHeight + 50,
+          padding: EdgeInsets.only(
+/*            // 나는 여기를 없애 버렸구나..
               top: Dimensions.edgeInsets30,
               bottom: Dimensions.edgeInsets30,
 */
-            left: Dimensions.edgeInsets20,
-            right: Dimensions.edgeInsets20),
-        decoration: BoxDecoration(
-          color: Colors.grey[200], // Colors.pink,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(Dimensions.radius20),
-              topRight: Radius.circular(Dimensions.radius20)),
-        ),
-        child: (cartController.getItems.length > 0)
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    // Shopping Cart 에 수량을 입력하기 위한 작업. 근데 quantity 만 가지고 다루고 있다.
-                    //padding: EdgeInsets.all(Dimensions.edgeInsets20),
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radius20),
-                        color: Colors.white),
-                    child: Row(
-                      //crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: Dimensions.height10,
+              left: Dimensions.edgeInsets20,
+              right: Dimensions.edgeInsets20),
+          decoration: BoxDecoration(
+            color: Colors.grey[200], // Colors.pink,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(Dimensions.radius20),
+                topRight: Radius.circular(Dimensions.radius20)),
+          ),
+          child: (cartController.getItems.length > 0)
+              ? Column(
+                  children: [
+                    InkWell(
+                      // payment option 부분.
+                      onTap: () {
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: Get.context!,
+                            builder: (_) {
+                              // 아니 Expanded widget 을 Column 으로 감싸야 한다고???? 이렇게 많이 감싸야 에러가 안난다고???
+                              return Column(
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Container(
+                                        height: MediaQuery.of(Get.context!)
+                                                .size
+                                                .height *
+                                            0.9,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(
+                                                    Dimensions.radius20),
+                                                topRight: Radius.circular(
+                                                    Dimensions.radius20))),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  left: Dimensions.edgeInsets20,
+                                                  top: Dimensions.edgeInsets20,
+                                                  right:
+                                                      Dimensions.edgeInsets20),
+                                              height: 520,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const PaymentOptionButton(
+                                                    iconData: Icons.money,
+                                                    title: 'Cash on delivery',
+                                                    subTitle:
+                                                        'You pay after getting the delivery',
+                                                    index: 0,
+                                                  ),
+                                                  SizedBox(
+                                                    height: Dimensions
+                                                            .edgeInsets10 /
+                                                        2,
+                                                  ),
+                                                  const PaymentOptionButton(
+                                                    iconData:
+                                                        Icons.paypal_outlined,
+                                                    title: 'Digital payment',
+                                                    subTitle:
+                                                        'Safer and faster way of payment',
+                                                    index: 1,
+                                                  ),
+                                                  SizedBox(
+                                                    height: Dimensions
+                                                            .edgeInsets10 /
+                                                        2,
+                                                  ),
+                                                  Text(
+                                                    'Delivery Options',
+                                                    style: robotoMedium,
+                                                  ),
+                                                  SizedBox(
+                                                    height: Dimensions
+                                                            .edgeInsets10 /
+                                                        2,
+                                                  ),
+                                                  DeliveryOptions(
+                                                      value: "delivery",
+                                                      title: "home delivery",
+                                                      amount: double.parse(
+                                                          Get.find<
+                                                                  CartController>()
+                                                              .totalAmount
+                                                              .toString()),
+                                                      isFree: false),
+                                                  SizedBox(
+                                                    height: Dimensions
+                                                            .edgeInsets10 /
+                                                        2,
+                                                  ),
+                                                  const DeliveryOptions(
+                                                      value: "takeout",
+                                                      title: "takeout",
+                                                      amount: 10.0,
+                                                      // 어짜피 free 이므로 상관없다.
+                                                      isFree: true),
+                                                  SizedBox(
+                                                    height:
+                                                        Dimensions.edgeInsets20,
+                                                  ),
+                                                  Text(
+                                                    'Additional Notes',
+                                                    style: robotoMedium,
+                                                  ),
+                                                  AppTextField(
+                                                    maxLines: 3,
+                                                    iconData: Icons.note,
+                                                    hintText: '추가사항을 입력해주세요.',
+                                                    textEditingController:
+                                                        _noteTextEditingController,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).whenComplete(() {
+                          // Future 클래스에 정의 되어 있는 함수이다. 이 클래스가 없어질 때 해당 클래스의 변수에 마지막으로 접근할 기회를 주는거구나.
+                          Get.find<OrderController>().setFoodOptionNote(
+                              _noteTextEditingController.text.trim());
+                        });
+                      },
+                      child: SizedBox(
+                        width: double.maxFinite,
+                        child: CommonTextButton(
+                          buttonTitle: "Payment options",
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: Dimensions.edgeInsets20,
-                              bottom: Dimensions.edgeInsets20,
-                              left: Dimensions.edgeInsets5,
-                              right: Dimensions.edgeInsets5),
-                          child: BigText(
-                            text:
-                                "Total Items : ${cartController.totalItems.toString()}",
-                            //popularProduct.quantity.toString(), TODO
-                            color: Colors.black45,
-                          ),
-                        ),
-                        SizedBox(
-                          width: Dimensions.height10,
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    // 체크아웃 버턴 부분
-                    onTap: () {
-                      // Login 이 되어 있는지 확인하는 부분
-                      if (Get.find<AuthController>().userLoggedIn()) {
-                        print("LSL : in cart_page.dart >>> logged in? <<<");
-
-                        // 주소가 비어있다면
-                        if (Get.find<LocationController>()
-                            .addressList
-                            .isEmpty) {
-                          print(
-                              "LSL : in cart_page.dart >>> yes. logged in. <<<");
-                          Get.toNamed(RouteHelper.getAddAddressPage());
-                        } else {
-                          //Get.offNamed(RouteHelper.getInitial()); // 주소가 리스트에 존재한다면  초기화면으로 가게 하면 된다. 그렇지만 뒤에거가 계속 실행되는거지.
-                          // 여기에서 payment 페이지로 가도록 한다. 왜냐하면 오더했고 유저도 로그인상태이므로 카트버턴을 눌렀으니 payment 로 가야지..
-                          //Get.offNamed(RouteHelper.getPaymentPage("27", Get.find<UserController>().userModel!.id!));
-                          // 여기서 잘봐라. 함수의 결과값을 넘기려면 _callback(xxx) 라고 넘겼겠지만 잘보면 그냥 함수의 이름만 넘기고 있다. 그말은 콜백함수로 넘기겠다는 뜻이다.
-                          // 여기서 이제까지 만든 PlaceOrderModel 을 넘겨주도록 하자.. 그러니깐 여기서 모델의 객체를 한꺼번에 다 만들어서 넘겨준다는 거지.
-                          // 모델을 만들어서 그 내용을 넘겨주려면 추가로 다른부분에서 데이터를 접근해서 가지고 와야하는구나..
-                          var location =
-                              Get.find<LocationController>().getUserAddress();
-                          var cart = Get.find<CartController>().getItems;
-                          var user = Get.find<UserController>().userModel;
-                          PlaceOrderModel placeOrderModel = PlaceOrderModel(
-                              cart: cart,
-                              orderAmount: 100.00,
-                              orderNote: 'Not note Yet',
-                              distance: 10,
-                              address: location.address,
-                              latitude: location.latitude,
-                              longitude: location.longitude,
-                              contactPersonName: user.fName,
-                              contactPersonNumber: user.phone);
-                          // 이렇게 수집해서 만든 객체를 이제 간편하게 통째로 함수로 넘겨준다.
-                          Get.find<OrderController>()
-                              .placeOrder(placeOrderModel, _callback);
-                        }
-                        // address 도 있으면 이제 쇼핑카트로 간다.
-                        // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
-                        print("in car_page. Tapped????");
-                        cartController.addToHistory();
-                      } else {
-                        // 이 부분을 내가 일부러 getter 를 사용했다. getter 사용하니깐 괄호를 넣을 필요가 없네..
-                        Get.toNamed(RouteHelper.getSignInPage);
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          top: Dimensions.edgeInsets20,
-                          bottom: Dimensions.edgeInsets20,
-                          left: Dimensions.edgeInsets15,
-                          right: Dimensions.edgeInsets15),
-                      decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(Dimensions.radius20),
-                          color: Colors.green[200]),
-                      child: Row(
-                        //crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          BigText(
-                            size: Dimensions.font16,
-                            text:
-                                '\$${double.parse(cartController.totalAmount.toString())}',
-                            color: Colors.black45,
-                          ),
-                          SizedBox(
-                            width: Dimensions.height20,
-                          ),
-                          BigText(
-                            text: 'Checkout',
-                            color: Colors.black45,
-                          ),
-                        ],
                       ),
                     ),
-                  ),
-                ],
-              )
-            : Container(),
-      );
+                    SizedBox(
+                      height: Dimensions.edgeInsets10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          // Shopping Cart 에 수량을 입력하기 위한 작업. 근데 quantity 만 가지고 다루고 있다.
+                          //padding: EdgeInsets.all(Dimensions.edgeInsets20),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(Dimensions.radius20),
+                              color: Colors.white),
+                          child: Row(
+                            //crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: Dimensions.height10,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: Dimensions.edgeInsets20,
+                                    bottom: Dimensions.edgeInsets20,
+                                    left: Dimensions.edgeInsets5,
+                                    right: Dimensions.edgeInsets5),
+                                child: BigText(
+                                  text:
+                                      "Total Items : ${cartController.totalItems.toString()}",
+                                  //popularProduct.quantity.toString(), TODO
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              SizedBox(
+                                width: Dimensions.height10,
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          // 체크아웃 버턴 부분
+                          onTap: () {
+                            // Login 이 되어 있는지 확인하는 부분
+                            if (Get.find<AuthController>().userLoggedIn()) {
+                              print(
+                                  "LSL : in cart_page.dart >>> logged in? <<<");
+
+                              // 주소가 비어있다면
+                              if (Get.find<LocationController>()
+                                  .addressList
+                                  .isEmpty) {
+                                print(
+                                    "LSL : in cart_page.dart >>> yes. logged in. <<<");
+                                Get.toNamed(RouteHelper.getAddAddressPage());
+                              } else {
+                                //Get.offNamed(RouteHelper.getInitial()); // 주소가 리스트에 존재한다면  초기화면으로 가게 하면 된다. 그렇지만 뒤에거가 계속 실행되는거지.
+                                // 여기에서 payment 페이지로 가도록 한다. 왜냐하면 오더했고 유저도 로그인상태이므로 카트버턴을 눌렀으니 payment 로 가야지..
+                                //Get.offNamed(RouteHelper.getPaymentPage("27", Get.find<UserController>().userModel!.id!));
+                                // 여기서 잘봐라. 함수의 결과값을 넘기려면 _callback(xxx) 라고 넘겼겠지만 잘보면 그냥 함수의 이름만 넘기고 있다. 그말은 콜백함수로 넘기겠다는 뜻이다.
+                                // 여기서 이제까지 만든 PlaceOrderModel 을 넘겨주도록 하자.. 그러니깐 여기서 모델의 객체를 한꺼번에 다 만들어서 넘겨준다는 거지.
+                                // 모델을 만들어서 그 내용을 넘겨주려면 추가로 다른부분에서 데이터를 접근해서 가지고 와야하는구나..
+                                var location = Get.find<LocationController>()
+                                    .getUserAddress();
+                                var cart = Get.find<CartController>().getItems;
+                                var user = Get.find<UserController>().userModel;
+                                PlaceOrderModel placeOrderModel =
+                                    PlaceOrderModel(
+                                        cart: cart,
+                                        orderAmount: 100.00,
+                                        orderNote: Get.find<OrderController>()
+                                            .foodNote
+                                            .toString()
+                                            .trim(),
+                                        distance: 10,
+                                        orderType: Get.find<OrderController>()
+                                            .orderType
+                                            .toString()
+                                            .trim(),
+                                        paymentMethod:
+                                            Get.find<OrderController>()
+                                                        .paymentIndex ==
+                                                    0
+                                                ? 'cash_on_delivery'
+                                                : 'digital_payment',
+                                        address: location.address,
+                                        latitude: location.latitude,
+                                        longitude: location.longitude,
+                                        contactPersonName: user.fName,
+                                        contactPersonNumber: user.phone);
+                                // 이렇게 수집해서 만든 객체를 이제 간편하게 통째로 함수로 넘겨준다.
+                                Get.find<OrderController>()
+                                    .placeOrder(placeOrderModel, _callback);
+                              }
+                              // address 도 있으면 이제 쇼핑카트로 간다.
+                              // 현재 쇼핑카트에 있는 CartModel 의 String 버전인 리스트를 히스토리를 위한 리스트에 복사를 한다. 이거 한다고 cartController 부르고 그게 다시 CarRepo 를 부르네..
+                              print("in car_page. Tapped????");
+                              cartController.addToHistory();
+                            } else {
+                              // 이 부분을 내가 일부러 getter 를 사용했다. getter 사용하니깐 괄호를 넣을 필요가 없네..
+                              Get.toNamed(RouteHelper.getSignInPage);
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.only(
+                                top: Dimensions.edgeInsets20,
+                                bottom: Dimensions.edgeInsets20,
+                                left: Dimensions.edgeInsets15,
+                                right: Dimensions.edgeInsets15),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(Dimensions.radius20),
+                                color: Colors.green[200]),
+                            child: Row(
+                              //crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                BigText(
+                                  size: Dimensions.font16,
+                                  text:
+                                      '\$${double.parse(cartController.totalAmount.toString())}',
+                                  color: Colors.black45,
+                                ),
+                                SizedBox(
+                                  width: Dimensions.height20,
+                                ),
+                                BigText(
+                                  text: 'Checkout',
+                                  color: Colors.black45,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              : Container());
     });
   }
 
@@ -453,8 +613,12 @@ class CartPage extends StatelessWidget {
       Get.find<CartController>().clear();
       Get.find<CartController>().removeCartSharedPreference();
       Get.find<CartController>().addToHistory();
-      Get.offNamed(RouteHelper.getPaymentPage(
-          orderId, Get.find<UserController>().userModel!.id!));
+      if (Get.find<OrderController>().paymentIndex == 0) {
+        Get.offNamed(RouteHelper.getOrderSuccessPage(orderId, "success"));
+      } else {
+        Get.offNamed(RouteHelper.getPaymentPage(
+            orderId, Get.find<UserController>().userModel!.id!));
+      }
     } else {
       showCustomSnackBar(message);
     }

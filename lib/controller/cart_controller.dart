@@ -50,11 +50,11 @@ class CartController extends GetxController {
 
   Map<int, CartModel> get items => _items;
 
-  set items(Map<int, CartModel> value) { // 히스토리에서 _items 로 값을 넣어주는 함수
+  set items(Map<int, CartModel> value) {
+    // 히스토리에서 _items 로 값을 넣어주는 함수
     _items = {}; // 초기화를 해준다.. 그럼 기존에 오더 하고 있던 내용은 다 지워지는데..
     _items = value;
   }
-
 
   List<CartModel> storageItems = []; // Items in Cart. Cart Items.
 
@@ -145,7 +145,8 @@ class CartController extends GetxController {
   int get totalItems {
     var totalQuantity = 0;
     _items.forEach((key, value) {
-      totalQuantity += value.quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
+      totalQuantity += value
+          .quantity!; // totalQuantity = totalQuantity + value.quantity!; 같은 뜻이다.
     });
 
     return totalQuantity;
@@ -174,7 +175,8 @@ class CartController extends GetxController {
     // 최초에 실행시에만 이 함수를 실행시켜서 값을 불러들인다.
     // 아마도 Repo 의 getCartList 에서 길이를 받아서 데이터가 있으면 그데이터를 이용하면 되겠네.. 어떤식으로 데이터를 보낼까? 당연히 객체로 보내면 되지.. List<CartModel>
     //print("in Cart_controller. cartRepo.getCartList() ${cartRepo.getCartList()}");
-    setCart = cartRepo.getCartList(); // 괭장히 멋진 내용이다. 왜냐면 Get 함수이면서 안에서 set 함수를 실행시키고 그리면서 다시 return 값을 넘겨주니깐..
+    setCart = cartRepo
+        .getCartList(); // 괭장히 멋진 내용이다. 왜냐면 Get 함수이면서 안에서 set 함수를 실행시키고 그리면서 다시 return 값을 넘겨주니깐..
     return storageItems; // 최종목표는 _items 에 데이터를 넣는거다.
   }
 
@@ -187,7 +189,8 @@ class CartController extends GetxController {
     for (int i = 0; i < storageItems.length; i++) {
       _items.putIfAbsent(storageItems[i].product!.id!, () => storageItems[i]);
     }
-    cartRepo.addToCartList(storageItems); // 여기도 추가 해주어야지 정확히 되는거지. 그리고 히스토리에 저장할 때도 cart 리스트를 이용해서 저장이 되는거고...
+    cartRepo.addToCartList(
+        storageItems); // 여기도 추가 해주어야지 정확히 되는거지. 그리고 히스토리에 저장할 때도 cart 리스트를 이용해서 저장이 되는거고...
     print("in cart_controller. _items 의 값은 ${_items.length}");
   }
 
@@ -207,8 +210,8 @@ class CartController extends GetxController {
     return cartRepo.getCartHistoryList();
   }
 
-
-  void addToCartList() { //카트에 _items 의 값을 추가해주는 함수
+  void addToCartList() {
+    //카트에 _items 의 값을 추가해주는 함수
     cartRepo.addToCartList(getItems);
     update();
   }
@@ -216,17 +219,18 @@ class CartController extends GetxController {
   void removeCart() {
     cartRepo.removeCart();
   }
+
   // Cart History 를 전부 지운다.
   void removeCartHistory() {
     cartRepo.removeCartHistory();
   }
+
   void updateCart() {
     update();
   }
+
   /// 로컬에 들어있는 데이터들을 전부 지워준다.
   void removeCartSharedPreference() {
     cartRepo.removeCartSharedPreference();
   }
-
-
 }

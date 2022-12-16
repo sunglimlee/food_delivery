@@ -6,10 +6,13 @@ class AppTextField extends StatelessWidget {
   final TextEditingController _textEditingController;
   final String _hintText;
   final IconData _iconData;
+  int maxLines;
 
-  const AppTextField(
+  AppTextField(
       {required String hintText, // 이건 required 를 했고
-      IconData iconData = Icons.tag_faces_rounded, // 이건 기본값을 넣어주었고, 그래서 파라미터를 넘기지 않아도 된다.
+      IconData iconData =
+          Icons.tag_faces_rounded, // 이건 기본값을 넣어주었고, 그래서 파라미터를 넘기지 않아도 된다.
+      this.maxLines = 1,
       required TextEditingController textEditingController,
       Key? key})
       : _hintText = hintText,
@@ -36,13 +39,14 @@ class AppTextField extends StatelessWidget {
         ],
       ),
       child: TextField(
+        maxLines: maxLines,
         obscureText: (_hintText == "Password") ? true : false,
         controller: _textEditingController,
         //hintText, //prefixIcon, //focusedBorder, //enabledBorder, //border
         decoration: InputDecoration(
-
           hintText: _hintText,
-          prefixIcon: Icon(_iconData,
+          prefixIcon: Icon(
+            _iconData,
             color: AppColors.yellowColor,
           ),
           // focused Border, 포커스를 받았을 때 나타나는 테두리

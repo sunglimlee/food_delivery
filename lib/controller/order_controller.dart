@@ -22,6 +22,18 @@ class OrderController extends GetxController implements GetxService {
 
   List<OrderModel> get historyOrderList => _historyOrderList;
 
+  // payment 방법에 대해
+  int _paymentIndex = 0; // cash 가 기본값임.
+  int get paymentIndex => _paymentIndex;
+
+  // delivery type 에 대해서
+  String _orderType = 'delviery';
+
+  String get orderType => _orderType;
+  String _foodNote = '';
+
+  String get foodNote => _foodNote;
+
   // 값을 받지만 여기까지 하고 리턴을 하지는 않을 거다. 그래서 Future<void> 를 해준다.
   Future<void> placeOrder(
       PlaceOrderModel placeOrderModel, Function callback) async {
@@ -62,17 +74,38 @@ class OrderController extends GetxController implements GetxService {
             orderModel.orderStatus == 'processing' ||
             orderModel.orderStatus == 'handover' ||
             orderModel.orderStatus == 'picked_up') {
-            _currentOrderList.add(orderModel); // 왜 나는 이런게 안떠오르는 걸까? 빈리스트를 만들었으니 당연히 add 를 할 수 있는 거잖아.
+          _currentOrderList.add(
+              orderModel); // 왜 나는 이런게 안떠오르는 걸까? 빈리스트를 만들었으니 당연히 add 를 할 수 있는 거잖아.
         } else {
-          _historyOrderList.add(orderModel); // 위의 내용이 아니라면 그건 전부 히스토리에 저장되어야 한다. 그러니깐 화면이 탭을 통해 두개로 나뉜다는 거지.
+          _historyOrderList.add(
+              orderModel); // 위의 내용이 아니라면 그건 전부 히스토리에 저장되어야 한다. 그러니깐 화면이 탭을 통해 두개로 나뉜다는 거지.
         }
       });
     } else {
       _historyOrderList = [];
       _currentOrderList = [];
-
     }
     _isLoading = false;
     update(); // 맨마지막에 해주네..
+  }
+
+  // Payment 값을 넣기 위한 함수
+  void setPaymentIndex(int index) {
+    _paymentIndex = index;
+    update(); // update 를 해주는 이유는 UI 에서 이값을 사용했을 때 변경된 값을 적용시키라는 의미이다.
+  }
+
+  // 너무나도 간단한 진리이다. 변수가지고 있고 그 변수를 바꾸는 함수가 있고 외부 ui 에서 함수로 값을 바꾸면 그함수가 다시 update 를 실행하도록 해서 ui 의 값을 해당 변수에 따라
+  // 바궈준다.
+  // Delivery Type
+  void setDeliveryType(String type) {
+    _orderType = type;
+    update();
+  }
+
+  /// 옵션의 note 를 넎는 부분
+  void setFoodOptionNote(String note) {
+    _foodNote = note;
+    //update();
   }
 }
