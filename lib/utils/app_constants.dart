@@ -43,4 +43,6 @@ class AppConstants {
   // orders
   static const String PLACE_ORDER_URI = "/api/v1/customer/order/place";
   static const String ORDER_LIST_URI = "/api/v1/customer/order/list";
+
+  static const String TOKEN_URI = '/api/v1/customer/cm-firebase-token';
 }

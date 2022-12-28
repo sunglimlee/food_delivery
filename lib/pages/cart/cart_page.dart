@@ -291,7 +291,8 @@ class CartPage extends StatelessWidget {
                             if (Get.find<AuthController>().userLoggedIn()) {
                               print(
                                   "LSL : in cart_page.dart >>> logged in? <<<");
-
+                              // 유저가 로그인했다는걸 업데이트하고
+                              Get.find<AuthController>().updateToken();
                               // 주소가 비어있다면
                               if (Get.find<LocationController>()
                                   .addressList

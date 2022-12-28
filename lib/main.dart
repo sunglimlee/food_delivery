@@ -1,18 +1,49 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:food_delivery/controller/cart_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
+import 'package:food_delivery/helper/notification_helper.dart';
 import 'package:food_delivery/pages/auth/sign_up_page.dart';
 import 'package:food_delivery/routes/route_helper.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:get/get.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'helper/dependencies.dart' as dep;
 import 'pages/auth/sign_in_page.dart';
 
+Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
+  print("onBackground: ${message.notification?.title}/${message.notification?.body}/"
+    "${message.notification?.titleLocKey}");
+}
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
 Future<void> main() async {
+  setPathUrlStrategy(); // part 8 에서 추가된 부분
   WidgetsFlutterBinding.ensureInitialized(); // 꼭 바인딩이 완료되었는지 확인한후 진해한다.
+  await Firebase.initializeApp();
   await dep.init(); // 여기 맨처음에 dependencies 를 설정해 준다.
+
+  // part 8 에서 추가된 부분
+  try {
+    if (GetPlatform.isMobile) { // 모바일일 때 이렇게 하면 되는구나. 웹일때는 다르게 하고.. 다트에서 기본으로 지원해주는 함수이네..
+      // 모든 메세지를 파이어베이스 콘솔에서 받아온다.
+      final RemoteMessage? remoteMessage = await FirebaseMessaging.instance.getInitialMessage(); // 초기화 하는 부분
+      await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+      FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler); // 백그라운드에서 실행되도록 함수를 연결해준다.
+    }
+  } catch(e) {
+    if (kDebugMode) {
+      print(e.toString());
+    }
+  }
+
+
   runApp(const MyApp());
 }
 
@@ -42,6 +73,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         //primarySwatch: Colors.blue,
         primaryColor: AppColors.mainColor,
+        fontFamily: "Lato"
         //fontFamily: "Lato", // 이건 아직없었는데, 아마도 구글에서 추가해주어야 될듯..
       ),
       //home: const SplashScreen(),

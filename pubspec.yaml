@@ -49,6 +49,10 @@ dependencies:
   google_maps_flutter_web: ^0.4.0+3
   flutter_google_places: ^0.3.0
   webview_flutter: ^3.0.4
+  firebase_core: ^1.2.1
+  firebase_messaging: ^11.2.4
+  flutter_local_notifications: ^9.1.5
+  url_strategy: ^0.2.0
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:food_delivery/data/api/api_client.dart';
 import 'package:food_delivery/model/signup_body_model.dart';
 import 'package:food_delivery/utils/app_constants.dart';
@@ -70,6 +71,47 @@ class AuthRepo {
     return true;
 
   }
+
+  Future<Response> updateToken() async {
+    String? _deviceToken;
+    if (GetPlatform.isIOS && !GetPlatform.isWeb) {
+      FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+        alert: true, announcement: false, badge: true, carPlay: false,
+        criticalAlert: false, provisional: false, sound: true,
+      );
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        _deviceToken = await _saveDeviceToken();
+        print("My token is 1 and IOS" + _deviceToken!);
+      }
+    } else {
+      _deviceToken = await _saveDeviceToken();
+      print("My token is 2" + _deviceToken!);
+    }
+    if (!GetPlatform.isWeb) {
+      FirebaseMessaging.instance.subscribeToTopic(AppConstants.TOPIC);
+    }
+    // 위의 조건을 모두 만족했으면 postData 를 이용해서 데이터를 보낸다.
+    return await apiClient.postData(AppConstants.TOKEN_URI, {"_method":"put", "cm_firebase_token": _deviceToken});
+  }
+
+  Future<String?> _saveDeviceToken() async {
+    String? _deviceToken = "@";
+    if (!GetPlatform.isWeb) {
+      try {
+        FirebaseMessaging.instance.requestPermission();
+        _deviceToken = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        print("could not get the token");
+        print(e.toString());
+      }
+    }
+    if (_deviceToken != null) {
+      print('------------Device Token-------------' + _deviceToken);
+    }
+    return _deviceToken;
+  }
+
 }
 
 

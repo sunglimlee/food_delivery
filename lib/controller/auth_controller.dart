@@ -81,5 +81,9 @@ class AuthController extends GetxController implements GetxService {
     return authRepo.clearSharedData();
   }
 
+  void updateToken() async {
+    await authRepo.updateToken();
+  }
+
 
 }

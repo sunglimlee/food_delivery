@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controller/auth_controller.dart';
 import 'package:food_delivery/controller/popular_product_controller.dart';
 import 'package:food_delivery/controller/recommended_product_controller.dart';
 import 'package:food_delivery/data/api/api_client.dart';
@@ -27,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState(); // 항상 초기화해주고
+    Get.find<AuthController>().updateToken();
     _loadResources();
     /*
       AnyClass() { newObject() { return something;}}
